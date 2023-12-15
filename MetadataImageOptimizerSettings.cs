@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Playnite.SDK.Data;
 
 namespace MetadataImageOptimizer
 {
@@ -16,7 +17,7 @@ namespace MetadataImageOptimizer
         private bool optimizeIcon;
         private string preferredFormat = "png";
 
-        public List<string> AvailableImageFormats { get; } = new List<string> { "bmp", "jpg", "png" };
+        [DontSerialize] public List<string> AvailableImageFormats { get; } = new List<string> { "bmp", "jpg", "png" };
 
         public bool AlwaysOptimizeOnSave { get => alwaysOptimizeOnSave; set => SetValue(ref alwaysOptimizeOnSave, value); }
         public int BackgroundMaxHeight { get => backgroundMaxHeight; set => SetValue(ref backgroundMaxHeight, value); }
