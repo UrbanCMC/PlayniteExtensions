@@ -70,7 +70,7 @@ namespace MetadataImageOptimizer
             var iconChanged = optimizerSettings.AlwaysOptimizeOnSave || change.OldData.Icon != change.NewData.Icon;
 
             var modified = false;
-            if (backgroundChanged && optimizerSettings.UpdateBackground)
+            if (backgroundChanged && optimizerSettings.OptimizeBackground)
             {
                 try
                 {
@@ -94,7 +94,7 @@ namespace MetadataImageOptimizer
                 }
             }
 
-            if (coverChanged && optimizerSettings.UpdateCover)
+            if (coverChanged && optimizerSettings.OptimizeCover)
             {
                 try
                 {
@@ -118,7 +118,7 @@ namespace MetadataImageOptimizer
                 }
             }
 
-            if (iconChanged && optimizerSettings.UpdateIcon)
+            if (iconChanged && optimizerSettings.OptimizeIcon)
             {
                 try
                 {
