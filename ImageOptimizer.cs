@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
+using System.Linq;
+using System.Windows.Media.Imaging;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
+using Image = SixLabors.ImageSharp.Image;
 
 namespace MetadataImageOptimizer
 {
@@ -14,9 +18,15 @@ namespace MetadataImageOptimizer
         /// <param name="maxWidth">The maximum width allowed for the image</param>
         /// <param name="maxHeight">The maximum height allowed for the image</param>
         /// <param name="preferredFormat">The name of the format the image should be saved in (e.g. jpeg, png)</param>
-        /// <returns></returns>
+        /// <returns>The path of the optimized image</returns>
         public static string Optimize(string imagePath, int maxWidth, int maxHeight, string preferredFormat)
         {
+            var imageExtension = Path.GetExtension(imagePath).Substring(1);
+            if (imageExtension == "ico")
+            {
+                imagePath = IcoToHighQualityImage(imagePath);
+            }
+
             using (var image = Image.Load(imagePath))
             {
                 var modified = false;
@@ -34,7 +44,6 @@ namespace MetadataImageOptimizer
                     modified = true;
                 }
 
-                var imageExtension = Path.GetExtension(imagePath).Substring(1);
                 if (imageExtension != preferredFormat)
                 {
                     var filename = Path.ChangeExtension(Guid.NewGuid().ToString(), preferredFormat.ToLower());
@@ -62,6 +71,28 @@ namespace MetadataImageOptimizer
                 }
 
                 return imagePath;
+            }
+        }
+
+        private static string IcoToHighQualityImage(string imagePath)
+        {
+            using (var fs = File.OpenRead(imagePath))
+            {
+                var decoder = new IconBitmapDecoder(fs, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.None);
+                using (var pngStream = new MemoryStream())
+                {
+                    var encoder = new PngBitmapEncoder();
+                    encoder.Frames.Add(decoder.Frames.OrderByDescending(x => x.Height).First());
+                    encoder.Save(pngStream);
+
+                    var filename = Path.ChangeExtension(Guid.NewGuid().ToString(), "png");
+                    var newPath = Path.Combine(Path.GetTempPath(), filename);
+
+                    var bmp = new Bitmap(pngStream);
+                    bmp.Save(newPath);
+
+                    return newPath;
+                }
             }
         }
     }
