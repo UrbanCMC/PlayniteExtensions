@@ -1,89 +1,31 @@
-﻿using Playnite.SDK;
-using Playnite.SDK.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace MetadataImageOptimizer
 {
     public class MetadataImageOptimizerSettings : ObservableObject
     {
-        private string option1 = string.Empty;
-        private bool option2 = false;
-        private bool optionThatWontBeSaved = false;
+        private bool alwaysOptimizeOnSave;
+        private int backgroundMaxHeight = 1920;
+        private int backgroundMaxWidth = 1080;
+        private int coverMaxHeight = 600;
+        private int coverMaxWidth = 900;
+        private int iconMaxHeight = 256;
+        private int iconMaxWidth = 256;
+        private string preferredFormat;
+        private bool updateBackground;
+        private bool updateCover;
+        private bool updateIcon;
 
-        public string Option1 { get => option1; set => SetValue(ref option1, value); }
-        public bool Option2 { get => option2; set => SetValue(ref option2, value); }
-        // Playnite serializes settings object to a JSON object and saves it as text file.
-        // If you want to exclude some property from being saved then use `JsonDontSerialize` ignore attribute.
-        [DontSerialize]
-        public bool OptionThatWontBeSaved { get => optionThatWontBeSaved; set => SetValue(ref optionThatWontBeSaved, value); }
-    }
-
-    public class MetadataImageOptimizerSettingsViewModel : ObservableObject, ISettings
-    {
-        private readonly MetadataImageOptimizer plugin;
-        private MetadataImageOptimizerSettings editingClone { get; set; }
-
-        private MetadataImageOptimizerSettings settings;
-        public MetadataImageOptimizerSettings Settings
-        {
-            get => settings;
-            set
-            {
-                settings = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public MetadataImageOptimizerSettingsViewModel(MetadataImageOptimizer plugin)
-        {
-            // Injecting your plugin instance is required for Save/Load method because Playnite saves data to a location based on what plugin requested the operation.
-            this.plugin = plugin;
-
-            // Load saved settings.
-            var savedSettings = plugin.LoadPluginSettings<MetadataImageOptimizerSettings>();
-
-            // LoadPluginSettings returns null if no saved data is available.
-            if (savedSettings != null)
-            {
-                Settings = savedSettings;
-            }
-            else
-            {
-                Settings = new MetadataImageOptimizerSettings();
-            }
-        }
-
-        public void BeginEdit()
-        {
-            // Code executed when settings view is opened and user starts editing values.
-            editingClone = Serialization.GetClone(Settings);
-        }
-
-        public void CancelEdit()
-        {
-            // Code executed when user decides to cancel any changes made since BeginEdit was called.
-            // This method should revert any changes made to Option1 and Option2.
-            Settings = editingClone;
-        }
-
-        public void EndEdit()
-        {
-            // Code executed when user decides to confirm changes made since BeginEdit was called.
-            // This method should save settings made to Option1 and Option2.
-            plugin.SavePluginSettings(Settings);
-        }
-
-        public bool VerifySettings(out List<string> errors)
-        {
-            // Code execute when user decides to confirm changes made since BeginEdit was called.
-            // Executed before EndEdit is called and EndEdit is not called if false is returned.
-            // List of errors is presented to user if verification fails.
-            errors = new List<string>();
-            return true;
-        }
+        public bool AlwaysOptimizeOnSave { get => alwaysOptimizeOnSave; set => SetValue(ref alwaysOptimizeOnSave, value); }
+        public int BackgroundMaxHeight { get => backgroundMaxHeight; set => SetValue(ref backgroundMaxHeight, value); }
+        public int BackgroundMaxWidth { get => backgroundMaxWidth; set => SetValue(ref backgroundMaxWidth, value); }
+        public int CoverMaxHeight { get => coverMaxHeight; set => SetValue(ref coverMaxHeight, value); }
+        public int CoverMaxWidth { get => coverMaxWidth; set => SetValue(ref coverMaxWidth, value); }
+        public int IconMaxHeight { get => iconMaxHeight; set => SetValue(ref iconMaxHeight, value); }
+        public int IconMaxWidth { get => iconMaxWidth; set => SetValue(ref iconMaxWidth, value); }
+        public string PreferredFormat { get => preferredFormat; set => SetValue(ref preferredFormat, value); }
+        public bool UpdateBackground { get => updateBackground; set => SetValue(ref updateBackground, value); }
+        public bool UpdateCover { get => updateCover; set => SetValue(ref updateCover, value); }
+        public bool UpdateIcon { get => updateIcon; set => SetValue(ref updateIcon, value); }
     }
 }
