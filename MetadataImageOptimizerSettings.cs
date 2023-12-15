@@ -5,16 +5,16 @@ namespace MetadataImageOptimizer
     public class MetadataImageOptimizerSettings : ObservableObject
     {
         private bool alwaysOptimizeOnSave;
-        private int backgroundMaxHeight = 1920;
-        private int backgroundMaxWidth = 1080;
-        private int coverMaxHeight = 600;
-        private int coverMaxWidth = 900;
+        private int backgroundMaxHeight = 1080;
+        private int backgroundMaxWidth = 1920;
+        private int coverMaxHeight = 900;
+        private int coverMaxWidth = 600;
         private int iconMaxHeight = 256;
         private int iconMaxWidth = 256;
         private bool optimizeBackground;
         private bool optimizeCover;
         private bool optimizeIcon;
-        private string preferredFormat;
+        private string preferredFormat = "png";
 
         public List<string> AvailableImageFormats { get; } = new List<string> { "bmp", "jpg", "png" };
 

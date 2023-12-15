@@ -1,8 +1,6 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.Processing;
 
 namespace MetadataImageOptimizer
@@ -37,23 +35,20 @@ namespace MetadataImageOptimizer
                 }
 
                 var imageExtension = Path.GetExtension(imagePath).Substring(1);
-                var imageFormat = new ImageFormatManager().ImageFormats.First(x => x.FileExtensions.Contains(imageExtension, StringComparer.OrdinalIgnoreCase));
-                if (imageFormat.Name != preferredFormat)
+                if (imageExtension != preferredFormat)
                 {
                     var filename = Path.ChangeExtension(Guid.NewGuid().ToString(), preferredFormat.ToLower());
                     var newPath = Path.Combine(Path.GetTempPath(), filename);
-                    switch (preferredFormat)
+                    switch (preferredFormat.ToUpper())
                     {
                         case "BMP":
-                            newPath = Path.ChangeExtension(imagePath, "bmp");
                             image.SaveAsBmp(newPath);
                             break;
+                        case "JPG":
                         case "JPEG":
-                            newPath = Path.ChangeExtension(imagePath, "jpg");
                             image.SaveAsJpeg(newPath);
                             break;
                         case "PNG":
-                            newPath = Path.ChangeExtension(imagePath, "png");
                             image.SaveAsPng(newPath);
                             break;
                     }
