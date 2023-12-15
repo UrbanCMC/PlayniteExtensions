@@ -5,7 +5,7 @@
   xmlns:locals="clr-namespace:MetadataImageOptimizer"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   d:DataContext="{d:DesignInstance locals:MetadataImageOptimizerSettingsViewModel}"
-  d:DesignHeight="500"
+  d:DesignHeight="400"
   d:DesignWidth="600"
   mc:Ignorable="d">
   <StackPanel Margin="15">
@@ -22,36 +22,36 @@
         <Grid.RowDefinitions>
           <RowDefinition Height="Auto" />
           <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <CheckBox Grid.Row="0"
           Grid.Column="0"
-          Grid.ColumnSpan="2"
+          Grid.ColumnSpan="4"
           Content="Optimize"
           IsChecked="{Binding Settings.OptimizeBackground}" />
 
         <TextBlock Grid.Row="1"
           Grid.Column="0"
           Margin="0,5,20,0"
-          Text="Max Width: " />
+          Text="Max Size: " />
         <TextBox Grid.Row="1"
           Grid.Column="1"
-          MinWidth="100"
+          MinWidth="20"
           Margin="0,5,0,0"
           IsEnabled="{Binding Settings.OptimizeBackground}"
           Text="{Binding Settings.BackgroundMaxWidth}" />
-
-        <TextBlock Grid.Row="2"
-          Grid.Column="0"
-          Margin="0,5,20,0"
-          Text="Max Height: " />
-        <TextBox Grid.Row="2"
-          Grid.Column="1"
-          MinWidth="100"
+        <TextBlock Grid.Row="1"
+          Grid.Column="2"
+          Margin="0,7,0,0"
+          Text="x" />
+        <TextBox Grid.Row="1"
+          Grid.Column="3"
+          MinWidth="20"
           Margin="0,5,0,0"
           IsEnabled="{Binding Settings.OptimizeBackground}"
           Text="{Binding Settings.BackgroundMaxHeight}" />
@@ -63,9 +63,10 @@
         <Grid.RowDefinitions>
           <RowDefinition Height="Auto" />
           <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
@@ -78,21 +79,20 @@
         <TextBlock Grid.Row="1"
           Grid.Column="0"
           Margin="0,5,20,0"
-          Text="Max Width: " />
+          Text="Max Size: " />
         <TextBox Grid.Row="1"
           Grid.Column="1"
-          MinWidth="100"
+          MinWidth="20"
           Margin="0,5,0,0"
           IsEnabled="{Binding Settings.OptimizeCover}"
           Text="{Binding Settings.CoverMaxWidth}" />
-
-        <TextBlock Grid.Row="2"
-          Grid.Column="0"
-          Margin="0,5,20,0"
-          Text="Max Height: " />
-        <TextBox Grid.Row="2"
-          Grid.Column="1"
-          MinWidth="100"
+        <TextBlock Grid.Row="1"
+          Grid.Column="2"
+          Margin="0,7,0,0"
+          Text="x" />
+        <TextBox Grid.Row="1"
+          Grid.Column="3"
+          MinWidth="20"
           Margin="0,5,0,0"
           IsEnabled="{Binding Settings.OptimizeCover}"
           Text="{Binding Settings.CoverMaxHeight}" />
@@ -104,9 +104,10 @@
         <Grid.RowDefinitions>
           <RowDefinition Height="Auto" />
           <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
@@ -119,21 +120,20 @@
         <TextBlock Grid.Row="1"
           Grid.Column="0"
           Margin="0,5,20,0"
-          Text="Max Width: " />
+          Text="Max Size: " />
         <TextBox Grid.Row="1"
           Grid.Column="1"
-          MinWidth="100"
+          MinWidth="20"
           Margin="0,5,0,0"
           IsEnabled="{Binding Settings.OptimizeIcon}"
           Text="{Binding Settings.IconMaxWidth}" />
-
-        <TextBlock Grid.Row="2"
-          Grid.Column="0"
-          Margin="0,5,20,0"
-          Text="Max Height: " />
-        <TextBox Grid.Row="2"
-          Grid.Column="1"
-          MinWidth="100"
+        <TextBlock Grid.Row="1"
+          Grid.Column="2"
+          Margin="0,7,0,0"
+          Text="x" />
+        <TextBox Grid.Row="1"
+          Grid.Column="3"
+          MinWidth="20"
           Margin="0,5,0,0"
           IsEnabled="{Binding Settings.OptimizeIcon}"
           Text="{Binding Settings.IconMaxHeight}" />
