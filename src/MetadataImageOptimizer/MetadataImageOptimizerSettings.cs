@@ -15,7 +15,7 @@ namespace MetadataImageOptimizer
         private bool optimizeBackground;
         private bool optimizeCover;
         private bool optimizeIcon;
-        private string preferredFormat = "png";
+        private string preferredFormat = "jpg";
 
         [DontSerialize] public List<string> AvailableImageFormats { get; } = new List<string> { "bmp", "jpg", "png" };
 

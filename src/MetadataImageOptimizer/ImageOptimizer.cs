@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Media.Imaging;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Processing;
 using Image = SixLabors.ImageSharp.Image;
 
@@ -59,7 +60,7 @@ namespace MetadataImageOptimizer
                             image.SaveAsBmp(newPath);
                             break;
                         case "JPG":
-                            image.SaveAsJpeg(newPath);
+                            image.SaveAsJpeg(newPath, new JpegEncoder { Quality = 90 });
                             break;
                         case "PNG":
                             image.SaveAsPng(newPath);
