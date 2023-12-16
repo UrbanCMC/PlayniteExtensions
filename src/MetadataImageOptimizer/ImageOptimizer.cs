@@ -17,11 +17,16 @@ namespace MetadataImageOptimizer
         /// <param name="imagePath">The full path to the image that should be optimized</param>
         /// <param name="maxWidth">The maximum width allowed for the image</param>
         /// <param name="maxHeight">The maximum height allowed for the image</param>
-        /// <param name="preferredFormat">The name of the format the image should be saved in (e.g. jpeg, png)</param>
+        /// <param name="preferredFormat">The name of the format the image should be saved in (e.g. jpg, png)</param>
         /// <returns>The path of the optimized image</returns>
         public static string Optimize(string imagePath, int maxWidth, int maxHeight, string preferredFormat)
         {
-            var imageExtension = Path.GetExtension(imagePath).Substring(1);
+            var imageExtension = Path.GetExtension(imagePath);
+            if (!string.IsNullOrWhiteSpace(imageExtension))
+            {
+                imageExtension = imageExtension.Substring(1);
+            }
+
             if (imageExtension == "ico")
             {
                 imagePath = IcoToHighQualityImage(imagePath);
@@ -54,7 +59,6 @@ namespace MetadataImageOptimizer
                             image.SaveAsBmp(newPath);
                             break;
                         case "JPG":
-                        case "JPEG":
                             image.SaveAsJpeg(newPath);
                             break;
                         case "PNG":
