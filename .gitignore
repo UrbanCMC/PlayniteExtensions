@@ -27,8 +27,8 @@ obj/
 [Rr]elease*/
 _ReSharper*/
 [Tt]est[Rr]esult*
-[Pp]ackages/*
+[Pp]ackages/
 [Ll]ibs
-.idea/*
-.vs/*
+.idea/
+.vs/
 *.pubxml
