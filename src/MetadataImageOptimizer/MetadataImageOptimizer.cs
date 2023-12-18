@@ -79,7 +79,7 @@ namespace MetadataImageOptimizer
                         backgroundPath
                         , optimizerSettings.BackgroundMaxWidth
                         , optimizerSettings.BackgroundMaxHeight
-                        , optimizerSettings.PreferredFormat);
+                        , optimizerSettings.BackgroundFormat);
                     if (!string.Equals(newBackgroundPath, backgroundPath, StringComparison.OrdinalIgnoreCase))
                     {
                         api.Database.RemoveFile(game.BackgroundImage);
@@ -103,7 +103,7 @@ namespace MetadataImageOptimizer
                         coverPath
                         , optimizerSettings.CoverMaxWidth
                         , optimizerSettings.CoverMaxHeight
-                        , optimizerSettings.PreferredFormat);
+                        , optimizerSettings.CoverFormat);
                     if (!string.Equals(newCoverPath, coverPath, StringComparison.OrdinalIgnoreCase))
                     {
                         api.Database.RemoveFile(game.CoverImage);
@@ -127,7 +127,7 @@ namespace MetadataImageOptimizer
                         iconPath
                         , optimizerSettings.IconMaxWidth
                         , optimizerSettings.IconMaxHeight
-                        , optimizerSettings.PreferredFormat);
+                        , optimizerSettings.IconFormat);
                     if (!string.Equals(newIconPath, iconPath, StringComparison.OrdinalIgnoreCase))
                     {
                         api.Database.RemoveFile(game.Icon);

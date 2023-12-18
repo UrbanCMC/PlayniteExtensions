@@ -5,56 +5,57 @@
   xmlns:locals="clr-namespace:MetadataImageOptimizer"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   d:DataContext="{d:DesignInstance locals:MetadataImageOptimizerSettingsViewModel}"
-  d:DesignHeight="400"
   d:DesignWidth="600"
   mc:Ignorable="d">
   <StackPanel Margin="15">
     <CheckBox Content="Always optimize images when editing a game" IsChecked="{Binding Settings.AlwaysOptimizeOnSave}" />
-    <TextBlock Margin="0,15,0,0" Text="Preferred image format:" />
-    <ComboBox MinWidth="150"
-      Margin="0,5,0,0"
-      HorizontalAlignment="Left"
-      ItemsSource="{Binding Settings.AvailableImageFormats}"
-      SelectedValue="{Binding Settings.PreferredFormat}" />
 
     <GroupBox Margin="0,15,0,0" Header="Background">
       <Grid Margin="5">
         <Grid.RowDefinitions>
           <RowDefinition Height="Auto" />
           <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="Auto" />
-          <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <CheckBox Grid.Row="0"
           Grid.Column="0"
-          Grid.ColumnSpan="4"
+          Grid.ColumnSpan="2"
           Content="Optimize"
           IsChecked="{Binding Settings.OptimizeBackground}" />
 
         <TextBlock Grid.Row="1"
           Grid.Column="0"
+          Margin="0,5,0,0"
+          Text="* Format:" />
+        <ComboBox Grid.Row="1"
+          Grid.Column="1"
+          MinWidth="100"
+          Margin="0,5,0,0"
+          HorizontalAlignment="Left"
+          IsEnabled="{Binding Settings.OptimizeBackground}"
+          ItemsSource="{Binding Settings.AvailableImageFormats}"
+          SelectedValue="{Binding Settings.BackgroundFormat}" />
+
+        <TextBlock Grid.Row="2"
+          Grid.Column="0"
           Margin="0,5,20,0"
           Text="Max Size: " />
-        <TextBox Grid.Row="1"
+        <StackPanel Grid.Row="2"
           Grid.Column="1"
-          MinWidth="20"
           Margin="0,5,0,0"
-          IsEnabled="{Binding Settings.OptimizeBackground}"
-          Text="{Binding Settings.BackgroundMaxWidth}" />
-        <TextBlock Grid.Row="1"
-          Grid.Column="2"
-          Margin="0,7,0,0"
-          Text="x" />
-        <TextBox Grid.Row="1"
-          Grid.Column="3"
-          MinWidth="20"
-          Margin="0,5,0,0"
-          IsEnabled="{Binding Settings.OptimizeBackground}"
-          Text="{Binding Settings.BackgroundMaxHeight}" />
+          Orientation="Horizontal">
+          <TextBox MinWidth="20"
+            IsEnabled="{Binding Settings.OptimizeBackground}"
+            Text="{Binding Settings.BackgroundMaxWidth}" />
+          <TextBlock Margin="0,2,0,0" Text="x" />
+          <TextBox MinWidth="20"
+            IsEnabled="{Binding Settings.OptimizeBackground}"
+            Text="{Binding Settings.BackgroundMaxHeight}" />
+        </StackPanel>
       </Grid>
     </GroupBox>
 
@@ -63,10 +64,9 @@
         <Grid.RowDefinitions>
           <RowDefinition Height="Auto" />
           <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="Auto" />
-          <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
@@ -78,24 +78,32 @@
 
         <TextBlock Grid.Row="1"
           Grid.Column="0"
+          Margin="0,5,0,0"
+          Text="* Format:" />
+        <ComboBox Grid.Row="1"
+          Grid.Column="1"
+          MinWidth="100"
+          Margin="0,5,0,0"
+          IsEnabled="{Binding Settings.OptimizeCover}"
+          ItemsSource="{Binding Settings.AvailableImageFormats}"
+          SelectedValue="{Binding Settings.CoverFormat}" />
+
+        <TextBlock Grid.Row="2"
+          Grid.Column="0"
           Margin="0,5,20,0"
           Text="Max Size: " />
-        <TextBox Grid.Row="1"
+        <StackPanel Grid.Row="2"
           Grid.Column="1"
-          MinWidth="20"
           Margin="0,5,0,0"
-          IsEnabled="{Binding Settings.OptimizeCover}"
-          Text="{Binding Settings.CoverMaxWidth}" />
-        <TextBlock Grid.Row="1"
-          Grid.Column="2"
-          Margin="0,7,0,0"
-          Text="x" />
-        <TextBox Grid.Row="1"
-          Grid.Column="3"
-          MinWidth="20"
-          Margin="0,5,0,0"
-          IsEnabled="{Binding Settings.OptimizeCover}"
-          Text="{Binding Settings.CoverMaxHeight}" />
+          Orientation="Horizontal">
+          <TextBox MinWidth="20"
+            IsEnabled="{Binding Settings.OptimizeCover}"
+            Text="{Binding Settings.CoverMaxWidth}" />
+          <TextBlock Margin="0,2,0,0" Text="x" />
+          <TextBox MinWidth="20"
+            IsEnabled="{Binding Settings.OptimizeCover}"
+            Text="{Binding Settings.CoverMaxHeight}" />
+        </StackPanel>
       </Grid>
     </GroupBox>
 
@@ -104,10 +112,9 @@
         <Grid.RowDefinitions>
           <RowDefinition Height="Auto" />
           <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="Auto" />
-          <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
@@ -119,25 +126,34 @@
 
         <TextBlock Grid.Row="1"
           Grid.Column="0"
+          Margin="0,5,0,0"
+          Text="* Format:" />
+        <ComboBox Grid.Row="1"
+          Grid.Column="1"
+          MinWidth="100"
+          Margin="0,5,0,0"
+          IsEnabled="{Binding Settings.OptimizeIcon}"
+          ItemsSource="{Binding Settings.AvailableImageFormats}"
+          SelectedValue="{Binding Settings.IconFormat}" />
+
+        <TextBlock Grid.Row="2"
+          Grid.Column="0"
           Margin="0,5,20,0"
           Text="Max Size: " />
-        <TextBox Grid.Row="1"
+        <StackPanel Grid.Row="2"
           Grid.Column="1"
-          MinWidth="20"
           Margin="0,5,0,0"
-          IsEnabled="{Binding Settings.OptimizeIcon}"
-          Text="{Binding Settings.IconMaxWidth}" />
-        <TextBlock Grid.Row="1"
-          Grid.Column="2"
-          Margin="0,7,0,0"
-          Text="x" />
-        <TextBox Grid.Row="1"
-          Grid.Column="3"
-          MinWidth="20"
-          Margin="0,5,0,0"
-          IsEnabled="{Binding Settings.OptimizeIcon}"
-          Text="{Binding Settings.IconMaxHeight}" />
+          Orientation="Horizontal">
+          <TextBox MinWidth="20"
+            IsEnabled="{Binding Settings.OptimizeIcon}"
+            Text="{Binding Settings.IconMaxWidth}" />
+          <TextBlock Margin="0,2,0,0" Text="x" />
+          <TextBox MinWidth="20"
+            IsEnabled="{Binding Settings.OptimizeIcon}"
+            Text="{Binding Settings.IconMaxHeight}" />
+        </StackPanel>
       </Grid>
     </GroupBox>
+    <TextBlock Margin="5,10,0,0" Text="* Only images using the png format support transparency" />
   </StackPanel>
 </UserControl>
