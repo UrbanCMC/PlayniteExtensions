@@ -8,7 +8,18 @@
   d:DesignWidth="600"
   mc:Ignorable="d">
   <StackPanel Margin="15">
-    <CheckBox Content="Always optimize images when editing a game" IsChecked="{Binding Settings.AlwaysOptimizeOnSave}" />
+    <StackPanel Orientation="Horizontal">
+      <CheckBox Content="Always optimize images when editing a game" IsChecked="{Binding Settings.AlwaysOptimizeOnSave}" />
+      <TextBlock Margin="10,0,0,0"
+        FontFamily="{DynamicResource FontIcoFont}"
+        Text="&#xefca;">
+        <TextBlock.ToolTip>
+          <TextBlock>
+            If enabled: When a game entry is saved, all image types where 'Optimize' is checked will be optimized.<LineBreak />
+            If disabled: When a game entry is saved, only images that were modified and where 'Optimize' is checked will be optimized.</TextBlock>
+        </TextBlock.ToolTip>
+      </TextBlock>
+    </StackPanel>
 
     <GroupBox Margin="0,15,0,0" Header="Background">
       <Grid Margin="5">
