@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace MetadataImageOptimizer
+namespace MetadataImageOptimizer.Views
 {
     public partial class MetadataImageOptimizerSettingsView : UserControl
     {

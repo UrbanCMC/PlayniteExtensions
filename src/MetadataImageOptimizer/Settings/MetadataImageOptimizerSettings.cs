@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Playnite.SDK.Data;
+using SixLabors.ImageSharp.Formats.Png;
 
 namespace MetadataImageOptimizer.Settings
 {
@@ -9,6 +10,7 @@ namespace MetadataImageOptimizer.Settings
         private ImageTypeSettings background;
         private ImageTypeSettings cover;
         private ImageTypeSettings icon;
+        private QualitySettings quality;
 
         public MetadataImageOptimizerSettings()
         {
@@ -21,6 +23,7 @@ namespace MetadataImageOptimizer.Settings
         public ImageTypeSettings Background { get => background; set => SetValue(ref background, value); }
         public ImageTypeSettings Cover { get => cover; set => SetValue(ref cover, value); }
         public ImageTypeSettings Icon { get => icon; set => SetValue(ref icon, value); }
+        public QualitySettings Quality { get => quality; set => SetValue(ref quality, value); }
 
         private void SetDefaults()
         {
@@ -47,6 +50,8 @@ namespace MetadataImageOptimizer.Settings
                 , MaxWidth = 256
                 , Optimize = false
             };
+
+            quality = new QualitySettings { JpgQuality = 90, PngCompressionLevel = PngCompressionLevel.Level6 };
         }
     }
 }

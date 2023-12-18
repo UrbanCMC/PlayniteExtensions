@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Controls;
 using MetadataImageOptimizer.Settings;
+using MetadataImageOptimizer.Views;
 using Playnite.SDK;
 using Playnite.SDK.Models;
 using Playnite.SDK.Plugins;
@@ -76,7 +77,7 @@ namespace MetadataImageOptimizer
                 try
                 {
                     var backgroundPath = api.Database.GetFullFilePath(game.BackgroundImage);
-                    var newBackgroundPath = ImageOptimizer.Optimize(backgroundPath, optimizerSettings.Background);
+                    var newBackgroundPath = ImageOptimizer.Optimize(backgroundPath, optimizerSettings.Background, optimizerSettings.Quality);
                     if (!string.Equals(newBackgroundPath, backgroundPath, StringComparison.OrdinalIgnoreCase))
                     {
                         api.Database.RemoveFile(game.BackgroundImage);
@@ -96,7 +97,7 @@ namespace MetadataImageOptimizer
                 try
                 {
                     var coverPath = api.Database.GetFullFilePath(game.CoverImage);
-                    var newCoverPath = ImageOptimizer.Optimize(coverPath, optimizerSettings.Cover);
+                    var newCoverPath = ImageOptimizer.Optimize(coverPath, optimizerSettings.Cover, optimizerSettings.Quality);
                     if (!string.Equals(newCoverPath, coverPath, StringComparison.OrdinalIgnoreCase))
                     {
                         api.Database.RemoveFile(game.CoverImage);
@@ -116,7 +117,7 @@ namespace MetadataImageOptimizer
                 try
                 {
                     var iconPath = api.Database.GetFullFilePath(game.Icon);
-                    var newIconPath = ImageOptimizer.Optimize(iconPath, optimizerSettings.Icon);
+                    var newIconPath = ImageOptimizer.Optimize(iconPath, optimizerSettings.Icon, optimizerSettings.Quality);
                     if (!string.Equals(newIconPath, iconPath, StringComparison.OrdinalIgnoreCase))
                     {
                         api.Database.RemoveFile(game.Icon);

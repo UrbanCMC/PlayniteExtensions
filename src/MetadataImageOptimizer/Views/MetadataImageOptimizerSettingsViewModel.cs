@@ -3,7 +3,7 @@ using MetadataImageOptimizer.Settings;
 using Playnite.SDK;
 using Playnite.SDK.Data;
 
-namespace MetadataImageOptimizer
+namespace MetadataImageOptimizer.Views
 {
     public class MetadataImageOptimizerSettingsViewModel : ObservableObject, ISettings
     {

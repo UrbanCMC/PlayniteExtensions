@@ -6,6 +6,7 @@ using System.Windows.Media.Imaging;
 using MetadataImageOptimizer.Settings;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.Processing;
 using Image = SixLabors.ImageSharp.Image;
 
@@ -18,8 +19,9 @@ namespace MetadataImageOptimizer
         /// </summary>
         /// <param name="imagePath">The full path to the image that should be optimized</param>
         /// <param name="imageSettings">The settings to use for optimizing the image</param>
+        /// <param name="qualitySettings">The quality settings for optimizing the image</param>
         /// <returns>The path of the optimized image</returns>
-        public static string Optimize(string imagePath, ImageTypeSettings imageSettings)
+        public static string Optimize(string imagePath, ImageTypeSettings imageSettings, QualitySettings qualitySettings)
         {
             var imageExtension = Path.GetExtension(imagePath);
             if (!string.IsNullOrWhiteSpace(imageExtension))
@@ -59,10 +61,10 @@ namespace MetadataImageOptimizer
                             image.SaveAsBmp(newPath);
                             break;
                         case "JPG":
-                            image.SaveAsJpeg(newPath, new JpegEncoder { Quality = 90 });
+                            image.SaveAsJpeg(newPath, new JpegEncoder { Quality = qualitySettings.JpgQuality });
                             break;
                         case "PNG":
-                            image.SaveAsPng(newPath);
+                            image.SaveAsPng(newPath, new PngEncoder() { CompressionLevel = qualitySettings.PngCompressionLevel });
                             break;
                     }
 
