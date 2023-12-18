@@ -3,6 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Media.Imaging;
+using MetadataImageOptimizer.Settings;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Processing;
@@ -16,11 +17,9 @@ namespace MetadataImageOptimizer
         /// Optimizes an image with the specified requirements
         /// </summary>
         /// <param name="imagePath">The full path to the image that should be optimized</param>
-        /// <param name="maxWidth">The maximum width allowed for the image</param>
-        /// <param name="maxHeight">The maximum height allowed for the image</param>
-        /// <param name="preferredFormat">The name of the format the image should be saved in (e.g. jpg, png)</param>
+        /// <param name="imageSettings">The settings to use for optimizing the image</param>
         /// <returns>The path of the optimized image</returns>
-        public static string Optimize(string imagePath, int maxWidth, int maxHeight, string preferredFormat)
+        public static string Optimize(string imagePath, ImageTypeSettings imageSettings)
         {
             var imageExtension = Path.GetExtension(imagePath);
             if (!string.IsNullOrWhiteSpace(imageExtension))
@@ -37,24 +36,24 @@ namespace MetadataImageOptimizer
             {
                 var modified = false;
 
-                var heightMult = (double)maxHeight / image.Height;
-                var widthMult = (double)maxWidth / image.Width;
-                if (image.Height > maxHeight && heightMult < widthMult)
+                var heightMult = (double)imageSettings.MaxHeight / image.Height;
+                var widthMult = (double)imageSettings.MaxWidth / image.Width;
+                if (image.Height > imageSettings.MaxHeight && heightMult < widthMult)
                 {
-                    image.Mutate(x => x.Resize(0, maxHeight));
+                    image.Mutate(x => x.Resize(0, imageSettings.MaxHeight));
                     modified = true;
                 }
-                else if (image.Width > maxWidth)
+                else if (image.Width > imageSettings.MaxWidth)
                 {
-                    image.Mutate(x => x.Resize(maxWidth, 0));
+                    image.Mutate(x => x.Resize(imageSettings.MaxWidth, 0));
                     modified = true;
                 }
 
-                if (imageExtension != preferredFormat)
+                if (imageExtension != imageSettings.Format)
                 {
-                    var filename = Path.ChangeExtension(Guid.NewGuid().ToString(), preferredFormat.ToLower());
+                    var filename = Path.ChangeExtension(Guid.NewGuid().ToString(), imageSettings.Format.ToLower());
                     var newPath = Path.Combine(Path.GetTempPath(), filename);
-                    switch (preferredFormat.ToUpper())
+                    switch (imageSettings.Format.ToUpper())
                     {
                         case "BMP":
                             image.SaveAsBmp(newPath);

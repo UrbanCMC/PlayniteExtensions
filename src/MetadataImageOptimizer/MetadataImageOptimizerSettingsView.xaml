@@ -25,7 +25,7 @@
           Grid.Column="0"
           Grid.ColumnSpan="2"
           Content="Optimize"
-          IsChecked="{Binding Settings.OptimizeBackground}" />
+          IsChecked="{Binding Settings.Background.Optimize}" />
 
         <TextBlock Grid.Row="1"
           Grid.Column="0"
@@ -36,9 +36,9 @@
           MinWidth="100"
           Margin="0,5,0,0"
           HorizontalAlignment="Left"
-          IsEnabled="{Binding Settings.OptimizeBackground}"
+          IsEnabled="{Binding Settings.Background.Optimize}"
           ItemsSource="{Binding Settings.AvailableImageFormats}"
-          SelectedValue="{Binding Settings.BackgroundFormat}" />
+          SelectedValue="{Binding Settings.Background.Format}" />
 
         <TextBlock Grid.Row="2"
           Grid.Column="0"
@@ -49,12 +49,12 @@
           Margin="0,5,0,0"
           Orientation="Horizontal">
           <TextBox MinWidth="20"
-            IsEnabled="{Binding Settings.OptimizeBackground}"
-            Text="{Binding Settings.BackgroundMaxWidth}" />
+            IsEnabled="{Binding Settings.Background.Optimize}"
+            Text="{Binding Settings.Background.MaxWidth}" />
           <TextBlock Margin="0,2,0,0" Text="x" />
           <TextBox MinWidth="20"
-            IsEnabled="{Binding Settings.OptimizeBackground}"
-            Text="{Binding Settings.BackgroundMaxHeight}" />
+            IsEnabled="{Binding Settings.Background.Optimize}"
+            Text="{Binding Settings.Background.MaxHeight}" />
         </StackPanel>
       </Grid>
     </GroupBox>
@@ -74,7 +74,7 @@
           Grid.Column="0"
           Grid.ColumnSpan="2"
           Content="Optimize"
-          IsChecked="{Binding Settings.OptimizeCover}" />
+          IsChecked="{Binding Settings.Cover.Optimize}" />
 
         <TextBlock Grid.Row="1"
           Grid.Column="0"
@@ -84,9 +84,9 @@
           Grid.Column="1"
           MinWidth="100"
           Margin="0,5,0,0"
-          IsEnabled="{Binding Settings.OptimizeCover}"
+          IsEnabled="{Binding Settings.Cover.Optimize}"
           ItemsSource="{Binding Settings.AvailableImageFormats}"
-          SelectedValue="{Binding Settings.CoverFormat}" />
+          SelectedValue="{Binding Settings.Cover.Format}" />
 
         <TextBlock Grid.Row="2"
           Grid.Column="0"
@@ -97,12 +97,12 @@
           Margin="0,5,0,0"
           Orientation="Horizontal">
           <TextBox MinWidth="20"
-            IsEnabled="{Binding Settings.OptimizeCover}"
-            Text="{Binding Settings.CoverMaxWidth}" />
+            IsEnabled="{Binding Settings.Cover.Optimize}"
+            Text="{Binding Settings.Cover.MaxWidth}" />
           <TextBlock Margin="0,2,0,0" Text="x" />
           <TextBox MinWidth="20"
-            IsEnabled="{Binding Settings.OptimizeCover}"
-            Text="{Binding Settings.CoverMaxHeight}" />
+            IsEnabled="{Binding Settings.Cover.Optimize}"
+            Text="{Binding Settings.Cover.MaxHeight}" />
         </StackPanel>
       </Grid>
     </GroupBox>
@@ -122,7 +122,7 @@
           Grid.Column="0"
           Grid.ColumnSpan="2"
           Content="Optimize"
-          IsChecked="{Binding Settings.OptimizeIcon}" />
+          IsChecked="{Binding Settings.Icon.Optimize}" />
 
         <TextBlock Grid.Row="1"
           Grid.Column="0"
@@ -132,9 +132,9 @@
           Grid.Column="1"
           MinWidth="100"
           Margin="0,5,0,0"
-          IsEnabled="{Binding Settings.OptimizeIcon}"
+          IsEnabled="{Binding Settings.Icon.Optimize}"
           ItemsSource="{Binding Settings.AvailableImageFormats}"
-          SelectedValue="{Binding Settings.IconFormat}" />
+          SelectedValue="{Binding Settings.Icon.Format}" />
 
         <TextBlock Grid.Row="2"
           Grid.Column="0"
@@ -145,12 +145,12 @@
           Margin="0,5,0,0"
           Orientation="Horizontal">
           <TextBox MinWidth="20"
-            IsEnabled="{Binding Settings.OptimizeIcon}"
-            Text="{Binding Settings.IconMaxWidth}" />
+            IsEnabled="{Binding Settings.Icon.Optimize}"
+            Text="{Binding Settings.Icon.MaxWidth}" />
           <TextBlock Margin="0,2,0,0" Text="x" />
           <TextBox MinWidth="20"
-            IsEnabled="{Binding Settings.OptimizeIcon}"
-            Text="{Binding Settings.IconMaxHeight}" />
+            IsEnabled="{Binding Settings.Icon.Optimize}"
+            Text="{Binding Settings.Icon.MaxHeight}" />
         </StackPanel>
       </Grid>
     </GroupBox>

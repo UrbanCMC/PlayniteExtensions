@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Windows.Controls;
+using MetadataImageOptimizer.Settings;
 using Playnite.SDK;
 using Playnite.SDK.Models;
 using Playnite.SDK.Plugins;
@@ -70,16 +71,12 @@ namespace MetadataImageOptimizer
             var iconChanged = optimizerSettings.AlwaysOptimizeOnSave || change.OldData.Icon != change.NewData.Icon;
 
             var modified = false;
-            if (backgroundChanged && optimizerSettings.OptimizeBackground)
+            if (backgroundChanged && optimizerSettings.Background.Optimize)
             {
                 try
                 {
                     var backgroundPath = api.Database.GetFullFilePath(game.BackgroundImage);
-                    var newBackgroundPath = ImageOptimizer.Optimize(
-                        backgroundPath
-                        , optimizerSettings.BackgroundMaxWidth
-                        , optimizerSettings.BackgroundMaxHeight
-                        , optimizerSettings.BackgroundFormat);
+                    var newBackgroundPath = ImageOptimizer.Optimize(backgroundPath, optimizerSettings.Background);
                     if (!string.Equals(newBackgroundPath, backgroundPath, StringComparison.OrdinalIgnoreCase))
                     {
                         api.Database.RemoveFile(game.BackgroundImage);
@@ -94,16 +91,12 @@ namespace MetadataImageOptimizer
                 }
             }
 
-            if (coverChanged && optimizerSettings.OptimizeCover)
+            if (coverChanged && optimizerSettings.Cover.Optimize)
             {
                 try
                 {
                     var coverPath = api.Database.GetFullFilePath(game.CoverImage);
-                    var newCoverPath = ImageOptimizer.Optimize(
-                        coverPath
-                        , optimizerSettings.CoverMaxWidth
-                        , optimizerSettings.CoverMaxHeight
-                        , optimizerSettings.CoverFormat);
+                    var newCoverPath = ImageOptimizer.Optimize(coverPath, optimizerSettings.Cover);
                     if (!string.Equals(newCoverPath, coverPath, StringComparison.OrdinalIgnoreCase))
                     {
                         api.Database.RemoveFile(game.CoverImage);
@@ -118,16 +111,12 @@ namespace MetadataImageOptimizer
                 }
             }
 
-            if (iconChanged && optimizerSettings.OptimizeIcon)
+            if (iconChanged && optimizerSettings.Icon.Optimize)
             {
                 try
                 {
                     var iconPath = api.Database.GetFullFilePath(game.Icon);
-                    var newIconPath = ImageOptimizer.Optimize(
-                        iconPath
-                        , optimizerSettings.IconMaxWidth
-                        , optimizerSettings.IconMaxHeight
-                        , optimizerSettings.IconFormat);
+                    var newIconPath = ImageOptimizer.Optimize(iconPath, optimizerSettings.Icon);
                     if (!string.Equals(newIconPath, iconPath, StringComparison.OrdinalIgnoreCase))
                     {
                         api.Database.RemoveFile(game.Icon);

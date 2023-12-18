@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MetadataImageOptimizer.Settings;
 using Playnite.SDK;
 using Playnite.SDK.Data;
 
