@@ -11,7 +11,7 @@ Packages:
   - Version: 1.1
     RequiredApiVersion: 6.2.0
     ReleaseDate: 2023-12-18
-    PackageUrl: https://github.com/UrbanCMC/PlayniteExtensions/releases/download/2023-12-18/MetadataImageOptimizer_1_1.PlayniteExtensions
+    PackageUrl: https://github.com/UrbanCMC/PlayniteExtensions/releases/download/metadataimageoptimizer1.1/MetadataImageOptimizer_1_1.pext
     Changelog:
     - Due to a change in file structure, all settings were reset to their default values
     - It is now possible to choose a separate format per image type
