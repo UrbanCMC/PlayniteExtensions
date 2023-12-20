@@ -58,9 +58,6 @@ namespace MetadataImageOptimizer
                     var newPath = Path.Combine(Path.GetTempPath(), filename);
                     switch (imageSettings.Format.ToUpper())
                     {
-                        case "BMP":
-                            image.SaveAsBmp(newPath);
-                            break;
                         case "JPG":
                             image.SaveAsJpeg(newPath, new JpegEncoder { Quality = qualitySettings.JpgQuality });
                             break;

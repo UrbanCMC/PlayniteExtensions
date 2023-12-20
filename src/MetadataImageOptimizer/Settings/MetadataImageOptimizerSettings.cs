@@ -21,8 +21,7 @@ namespace MetadataImageOptimizer.Settings
         [DontSerialize]
         public Dictionary<string, string> AvailableImageFormats { get; } = new Dictionary<string, string>
         {
-            { "bmp", "BMP" }
-            , { "jpg", "JPG" }
+            { "jpg", "JPG" }
             , { "png", "PNG" }
             , { "webp", "WebP (Lossy)" }
         };

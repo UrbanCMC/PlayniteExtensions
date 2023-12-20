@@ -49,7 +49,7 @@
       Settings="{Binding Settings.Icon}" />
 
     <TextBlock Margin="5,10,0,0" TextWrapping="Wrap">
-      * Only images using the PNG or WebP format support transparency.<LineBreak />
-      WebP images are smaller but take more time to convert.</TextBlock>
+      * The JPG format does not support transparency.<LineBreak />
+      WebP images are smaller but require more time to convert.</TextBlock>
   </StackPanel>
 </UserControl>
