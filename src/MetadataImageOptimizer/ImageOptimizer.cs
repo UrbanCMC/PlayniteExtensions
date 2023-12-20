@@ -7,6 +7,7 @@ using MetadataImageOptimizer.Settings;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Formats.Png;
+using SixLabors.ImageSharp.Formats.Webp;
 using SixLabors.ImageSharp.Processing;
 using Image = SixLabors.ImageSharp.Image;
 
@@ -64,7 +65,10 @@ namespace MetadataImageOptimizer
                             image.SaveAsJpeg(newPath, new JpegEncoder { Quality = qualitySettings.JpgQuality });
                             break;
                         case "PNG":
-                            image.SaveAsPng(newPath, new PngEncoder() { CompressionLevel = qualitySettings.PngCompressionLevel });
+                            image.SaveAsPng(newPath, new PngEncoder { CompressionLevel = qualitySettings.PngCompressionLevel });
+                            break;
+                        case "WEBP":
+                            image.SaveAsWebp(newPath, new WebpEncoder { Method = qualitySettings.WebpEncodingMethod, Quality = qualitySettings.WebpQuality });
                             break;
                     }
 

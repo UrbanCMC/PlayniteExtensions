@@ -59,9 +59,11 @@
           MinWidth="100"
           Margin="0,5,0,0"
           HorizontalAlignment="Left"
+          DisplayMemberPath="Value"
           IsEnabled="{Binding Settings.Background.Optimize}"
           ItemsSource="{Binding Settings.AvailableImageFormats}"
-          SelectedValue="{Binding Settings.Background.Format}" />
+          SelectedValue="{Binding Settings.Background.Format}"
+          SelectedValuePath="Key" />
 
         <TextBlock Grid.Row="2"
           Grid.Column="0"
@@ -107,9 +109,11 @@
           Grid.Column="1"
           MinWidth="100"
           Margin="0,5,0,0"
+          DisplayMemberPath="Value"
           IsEnabled="{Binding Settings.Cover.Optimize}"
           ItemsSource="{Binding Settings.AvailableImageFormats}"
-          SelectedValue="{Binding Settings.Cover.Format}" />
+          SelectedValue="{Binding Settings.Cover.Format}"
+          SelectedValuePath="Key" />
 
         <TextBlock Grid.Row="2"
           Grid.Column="0"
@@ -155,9 +159,11 @@
           Grid.Column="1"
           MinWidth="100"
           Margin="0,5,0,0"
+          DisplayMemberPath="Value"
           IsEnabled="{Binding Settings.Icon.Optimize}"
           ItemsSource="{Binding Settings.AvailableImageFormats}"
-          SelectedValue="{Binding Settings.Icon.Format}" />
+          SelectedValue="{Binding Settings.Icon.Format}"
+          SelectedValuePath="Key" />
 
         <TextBlock Grid.Row="2"
           Grid.Column="0"
@@ -177,6 +183,8 @@
         </StackPanel>
       </Grid>
     </GroupBox>
-    <TextBlock Margin="5,10,0,0" Text="* Only images using the png format support transparency" />
+    <TextBlock Margin="5,10,0,0" TextWrapping="Wrap">
+      * Only images using the PNG or WebP format support transparency.<LineBreak />
+      WebP images are smaller but take more time to convert.</TextBlock>
   </StackPanel>
 </UserControl>

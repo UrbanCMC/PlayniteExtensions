@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Playnite.SDK.Data;
 using SixLabors.ImageSharp.Formats.Png;
+using SixLabors.ImageSharp.Formats.Webp;
 
 namespace MetadataImageOptimizer.Settings
 {
@@ -17,7 +18,14 @@ namespace MetadataImageOptimizer.Settings
             SetDefaults();
         }
 
-        [DontSerialize] public List<string> AvailableImageFormats { get; } = new List<string> { "bmp", "jpg", "png" };
+        [DontSerialize]
+        public Dictionary<string, string> AvailableImageFormats { get; } = new Dictionary<string, string>
+        {
+            { "bmp", "BMP" }
+            , { "jpg", "JPG" }
+            , { "png", "PNG" }
+            , { "webp", "WebP (Lossy)" }
+        };
 
         public bool AlwaysOptimizeOnSave { get => alwaysOptimizeOnSave; set => SetValue(ref alwaysOptimizeOnSave, value); }
         public ImageTypeSettings Background { get => background; set => SetValue(ref background, value); }
@@ -51,7 +59,13 @@ namespace MetadataImageOptimizer.Settings
                 , Optimize = false
             };
 
-            quality = new QualitySettings { JpgQuality = 90, PngCompressionLevel = PngCompressionLevel.Level6 };
+            quality = new QualitySettings
+            {
+                JpgQuality = 90
+                , PngCompressionLevel = PngCompressionLevel.Level6
+                , WebpEncodingMethod = WebpEncodingMethod.Level4
+                , WebpQuality = 90
+            };
         }
     }
 }
