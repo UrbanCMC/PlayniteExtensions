@@ -7,6 +7,18 @@
   d:DataContext="{d:DesignInstance local:MetadataImageOptimizerSettingsViewModel}"
   d:DesignWidth="600"
   mc:Ignorable="d">
+  <UserControl.Resources>
+    <Style TargetType="TextBlock">
+      <Style.Setters>
+        <Setter Property="VerticalAlignment" Value="Center" />
+      </Style.Setters>
+    </Style>
+    <Style TargetType="TextBox">
+      <Style.Setters>
+        <Setter Property="Height" Value="22" />
+      </Style.Setters>
+    </Style>
+  </UserControl.Resources>
   <Grid Margin="15">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
