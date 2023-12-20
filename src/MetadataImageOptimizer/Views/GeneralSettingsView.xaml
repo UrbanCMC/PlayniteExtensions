@@ -1,6 +1,7 @@
 ﻿<UserControl x:Class="MetadataImageOptimizer.Views.GeneralSettingsView"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:controls="clr-namespace:MetadataImageOptimizer.Controls"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:locals="clr-namespace:MetadataImageOptimizer.Views"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -8,14 +9,15 @@
   d:DesignWidth="600"
   mc:Ignorable="d">
   <UserControl.Resources>
-    <Style TargetType="TextBlock">
+    <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="TextBlock">
       <Style.Setters>
         <Setter Property="VerticalAlignment" Value="Center" />
       </Style.Setters>
     </Style>
-    <Style TargetType="TextBox">
+    <Style BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
       <Style.Setters>
         <Setter Property="Height" Value="22" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
       </Style.Setters>
     </Style>
   </UserControl.Resources>
@@ -33,156 +35,19 @@
       </TextBlock>
     </StackPanel>
 
-    <GroupBox Margin="0,15,0,0" Header="Background">
-      <Grid Margin="5">
-        <Grid.RowDefinitions>
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="Auto" />
-          <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
-        <CheckBox Grid.Row="0"
-          Grid.Column="0"
-          Grid.ColumnSpan="2"
-          Content="Optimize"
-          IsChecked="{Binding Settings.Background.Optimize}" />
+    <controls:ImageTypeSettingsGroupBox Margin="0,15,0,0"
+      AvailableImageFormats="{Binding Settings.AvailableImageFormats}"
+      Header="Background"
+      Settings="{Binding Settings.Background}" />
+    <controls:ImageTypeSettingsGroupBox Margin="0,15,0,0"
+      AvailableImageFormats="{Binding Settings.AvailableImageFormats}"
+      Header="Cover"
+      Settings="{Binding Settings.Cover}" />
+    <controls:ImageTypeSettingsGroupBox Margin="0,15,0,0"
+      AvailableImageFormats="{Binding Settings.AvailableImageFormats}"
+      Header="Icon"
+      Settings="{Binding Settings.Icon}" />
 
-        <TextBlock Grid.Row="1"
-          Grid.Column="0"
-          Margin="0,5,0,0"
-          Text="* Format:" />
-        <ComboBox Grid.Row="1"
-          Grid.Column="1"
-          MinWidth="100"
-          Margin="0,5,0,0"
-          HorizontalAlignment="Left"
-          DisplayMemberPath="Value"
-          IsEnabled="{Binding Settings.Background.Optimize}"
-          ItemsSource="{Binding Settings.AvailableImageFormats}"
-          SelectedValue="{Binding Settings.Background.Format}"
-          SelectedValuePath="Key" />
-
-        <TextBlock Grid.Row="2"
-          Grid.Column="0"
-          Margin="0,5,20,0"
-          Text="Max Size: " />
-        <StackPanel Grid.Row="2"
-          Grid.Column="1"
-          Margin="0,5,0,0"
-          Orientation="Horizontal">
-          <TextBox MinWidth="20"
-            IsEnabled="{Binding Settings.Background.Optimize}"
-            Text="{Binding Settings.Background.MaxWidth}" />
-          <TextBlock VerticalAlignment="Bottom" Text="x" />
-          <TextBox MinWidth="20"
-            IsEnabled="{Binding Settings.Background.Optimize}"
-            Text="{Binding Settings.Background.MaxHeight}" />
-        </StackPanel>
-      </Grid>
-    </GroupBox>
-
-    <GroupBox Margin="0,15,0,0" Header="Cover">
-      <Grid Margin="5">
-        <Grid.RowDefinitions>
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="Auto" />
-          <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
-        <CheckBox Grid.Row="0"
-          Grid.Column="0"
-          Grid.ColumnSpan="2"
-          Content="Optimize"
-          IsChecked="{Binding Settings.Cover.Optimize}" />
-
-        <TextBlock Grid.Row="1"
-          Grid.Column="0"
-          Margin="0,5,0,0"
-          Text="* Format:" />
-        <ComboBox Grid.Row="1"
-          Grid.Column="1"
-          MinWidth="100"
-          Margin="0,5,0,0"
-          DisplayMemberPath="Value"
-          IsEnabled="{Binding Settings.Cover.Optimize}"
-          ItemsSource="{Binding Settings.AvailableImageFormats}"
-          SelectedValue="{Binding Settings.Cover.Format}"
-          SelectedValuePath="Key" />
-
-        <TextBlock Grid.Row="2"
-          Grid.Column="0"
-          Margin="0,5,20,0"
-          Text="Max Size: " />
-        <StackPanel Grid.Row="2"
-          Grid.Column="1"
-          Margin="0,5,0,0"
-          Orientation="Horizontal">
-          <TextBox MinWidth="20"
-            IsEnabled="{Binding Settings.Cover.Optimize}"
-            Text="{Binding Settings.Cover.MaxWidth}" />
-          <TextBlock VerticalAlignment="Bottom" Text="x" />
-          <TextBox MinWidth="20"
-            IsEnabled="{Binding Settings.Cover.Optimize}"
-            Text="{Binding Settings.Cover.MaxHeight}" />
-        </StackPanel>
-      </Grid>
-    </GroupBox>
-
-    <GroupBox Margin="0,15,0,0" Header="Icon">
-      <Grid Margin="5">
-        <Grid.RowDefinitions>
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="Auto" />
-          <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
-        <CheckBox Grid.Row="0"
-          Grid.Column="0"
-          Grid.ColumnSpan="2"
-          Content="Optimize"
-          IsChecked="{Binding Settings.Icon.Optimize}" />
-
-        <TextBlock Grid.Row="1"
-          Grid.Column="0"
-          Margin="0,5,0,0"
-          Text="* Format:" />
-        <ComboBox Grid.Row="1"
-          Grid.Column="1"
-          MinWidth="100"
-          Margin="0,5,0,0"
-          DisplayMemberPath="Value"
-          IsEnabled="{Binding Settings.Icon.Optimize}"
-          ItemsSource="{Binding Settings.AvailableImageFormats}"
-          SelectedValue="{Binding Settings.Icon.Format}"
-          SelectedValuePath="Key" />
-
-        <TextBlock Grid.Row="2"
-          Grid.Column="0"
-          Margin="0,5,20,0"
-          Text="Max Size: " />
-        <StackPanel Grid.Row="2"
-          Grid.Column="1"
-          Margin="0,5,0,0"
-          Orientation="Horizontal">
-          <TextBox MinWidth="20"
-            IsEnabled="{Binding Settings.Icon.Optimize}"
-            Text="{Binding Settings.Icon.MaxWidth}" />
-          <TextBlock VerticalAlignment="Bottom" Text="x" />
-          <TextBox MinWidth="20"
-            IsEnabled="{Binding Settings.Icon.Optimize}"
-            Text="{Binding Settings.Icon.MaxHeight}" />
-        </StackPanel>
-      </Grid>
-    </GroupBox>
     <TextBlock Margin="5,10,0,0" TextWrapping="Wrap">
       * Only images using the PNG or WebP format support transparency.<LineBreak />
       WebP images are smaller but take more time to convert.</TextBlock>
