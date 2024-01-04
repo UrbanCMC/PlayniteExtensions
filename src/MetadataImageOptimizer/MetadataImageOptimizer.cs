@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Controls;
@@ -27,6 +28,19 @@ namespace MetadataImageOptimizer
             Properties = new GenericPluginProperties { HasSettings = true };
 
             api.Database.Games.ItemUpdated += OnGameUpdated;
+        }
+
+        public override IEnumerable<GameMenuItem> GetGameMenuItems(GetGameMenuItemsArgs args)
+        {
+            yield return new GameMenuItem
+            {
+                Description = "Optimize images",
+                MenuSection = "MetadataImageOptimizer",
+                Action = actionArgs =>
+                {
+                    OptimizeGames(actionArgs.Games, settings.Settings);
+                }
+            };
         }
 
         public override ISettings GetSettings(bool firstRunSettings)
@@ -58,17 +72,45 @@ namespace MetadataImageOptimizer
             }
 
             api.Dialogs.ActivateGlobalProgress(
-                (globalProgress) =>
+                globalProgress =>
                 {
                     globalProgress.ProgressMaxValue = gamesToUpdate.Count;
 
                     foreach (var change in gamesToUpdate)
                     {
                         OptimizeGame(change, optimizerSettings);
+
                         globalProgress.CurrentProgressValue += 1;
                     }
                 }
                 , new GlobalProgressOptions("Optimizing game images...", false) { IsIndeterminate = gamesToUpdate.Count == 1 });
+        }
+
+        private void OptimizeGames(List<Game> games, MetadataImageOptimizerSettings optimizerSettings)
+        {
+            if (games.Count == 0)
+            {
+                return;
+            }
+
+            api.Dialogs.ActivateGlobalProgress(
+                globalProgress =>
+                {
+                    globalProgress.ProgressMaxValue = games.Count;
+
+                    foreach (var game in games)
+                    {
+                        OptimizeGame(
+                            game
+                            , optimizerSettings
+                            , optimizerSettings.Background.Optimize
+                            , optimizerSettings.Cover.Optimize
+                            , optimizerSettings.Icon.Optimize);
+
+                        globalProgress.CurrentProgressValue += 1;
+                    }
+                }
+                , new GlobalProgressOptions("Optimizing game images...", false) { IsIndeterminate = games.Count == 1 });
         }
 
         private void OptimizeGame(ItemUpdateEvent<Game> change, MetadataImageOptimizerSettings optimizerSettings)
@@ -79,8 +121,14 @@ namespace MetadataImageOptimizer
             var coverChanged = optimizerSettings.AlwaysOptimizeOnSave || change.OldData.CoverImage != change.NewData.CoverImage;
             var iconChanged = optimizerSettings.AlwaysOptimizeOnSave || change.OldData.Icon != change.NewData.Icon;
 
+            OptimizeGame(game, optimizerSettings, backgroundChanged, coverChanged, iconChanged);
+        }
+
+        private void OptimizeGame(Game game, MetadataImageOptimizerSettings optimizerSettings, bool optimizeBackground, bool optimizeCover, bool optimizeIcon)
+        {
             var modified = false;
-            if (backgroundChanged && optimizerSettings.Background.Optimize)
+
+            if (optimizeBackground)
             {
                 try
                 {
@@ -100,7 +148,7 @@ namespace MetadataImageOptimizer
                 }
             }
 
-            if (coverChanged && optimizerSettings.Cover.Optimize)
+            if (optimizeCover)
             {
                 try
                 {
@@ -120,7 +168,7 @@ namespace MetadataImageOptimizer
                 }
             }
 
-            if (iconChanged && optimizerSettings.Icon.Optimize)
+            if (optimizeIcon)
             {
                 try
                 {
