@@ -23,3 +23,9 @@ Packages:
     Changelog:
     - Added support for WebP
     - Removed BMP support because it provides no actual value
+  - Version: 1.3
+    RequiredApiVersion: 6.2.0
+    ReleaseDate: TBD
+    PackageUrl: https://github.com/UrbanCMC/PlayniteExtensions/releases/download/metadataimageoptimizer1.3/MetadataImageOptimizer_1_3.pext
+    Changelog:
+    - Show progress bar while converting images

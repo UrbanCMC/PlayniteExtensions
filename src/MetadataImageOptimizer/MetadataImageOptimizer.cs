@@ -57,10 +57,18 @@ namespace MetadataImageOptimizer
                 return;
             }
 
-            foreach (var change in gamesToUpdate)
-            {
-                OptimizeGame(change, optimizerSettings);
-            }
+            api.Dialogs.ActivateGlobalProgress(
+                (globalProgress) =>
+                {
+                    globalProgress.ProgressMaxValue = gamesToUpdate.Count;
+
+                    foreach (var change in gamesToUpdate)
+                    {
+                        OptimizeGame(change, optimizerSettings);
+                        globalProgress.CurrentProgressValue += 1;
+                    }
+                }
+                , new GlobalProgressOptions("Optimizing game images...", false) { IsIndeterminate = gamesToUpdate.Count == 1 });
         }
 
         private void OptimizeGame(ItemUpdateEvent<Game> change, MetadataImageOptimizerSettings optimizerSettings)
