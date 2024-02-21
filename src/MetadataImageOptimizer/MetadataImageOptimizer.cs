@@ -94,6 +94,16 @@ namespace MetadataImageOptimizer
         {
             var optimizerSettings = settings.Settings;
             var gamesToUpdate = e.UpdatedItems;
+
+            // Ignore games where the playing/installing status was updated
+            gamesToUpdate = gamesToUpdate.Where(
+                    change => change.OldData.IsInstalled == change.NewData.IsInstalled
+                        && change.OldData.IsInstalling == change.NewData.IsInstalling
+                        && change.OldData.IsLaunching == change.NewData.IsLaunching
+                        && change.OldData.IsRunning == change.NewData.IsRunning
+                        && change.OldData.IsUninstalling == change.NewData.IsUninstalling)
+                .ToList();
+
             if (!optimizerSettings.AlwaysOptimizeOnSave)
             {
                 gamesToUpdate = gamesToUpdate.Where(
