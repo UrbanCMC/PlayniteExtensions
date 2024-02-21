@@ -188,7 +188,6 @@ namespace MetadataImageOptimizer
             {
                 if (optimizerSettings.RunInBackground)
                 {
-                    // todo
                     QueueOptimizeGame(game.Id, backgroundChanged, coverChanged, iconChanged);
                 }
                 else 
