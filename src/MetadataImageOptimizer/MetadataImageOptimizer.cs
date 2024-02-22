@@ -224,7 +224,7 @@ namespace MetadataImageOptimizer
             string newCoverPath = null;
             string newIconPath = null;
 
-            if (optimizeBackground)
+            if (optimizeBackground && !string.IsNullOrWhiteSpace(game.BackgroundImage))
             {
                 try
                 {
@@ -237,7 +237,7 @@ namespace MetadataImageOptimizer
                 }
             }
 
-            if (optimizeCover)
+            if (optimizeCover && !string.IsNullOrWhiteSpace(game.CoverImage))
             {
                 try
                 {
@@ -250,7 +250,7 @@ namespace MetadataImageOptimizer
                 }
             }
 
-            if (optimizeIcon)
+            if (optimizeIcon && !string.IsNullOrWhiteSpace(game.Icon))
             {
                 try
                 {

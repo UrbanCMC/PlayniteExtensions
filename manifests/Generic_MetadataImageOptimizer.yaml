@@ -30,3 +30,10 @@ Packages:
     Changelog:
     - Show progress bar while converting images
     - Added context menu item to optimize images of selected games
+  - Version: 1.4
+    RequiredApiVersion: 6.2.0
+    ReleaseDate: 2024-02-22
+    PackageUrl: https://github.com/UrbanCMC/PlayniteExtensions/releases/download/metadataimageoptimizer1.4/MetadataImageOptimizer_1_4.pext
+    Changelog:
+    - Add option to perform image optimization in background thread
+    - Don''t optimize images when play/installation status changes
