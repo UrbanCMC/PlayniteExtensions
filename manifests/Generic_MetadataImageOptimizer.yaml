@@ -37,3 +37,9 @@ Packages:
     Changelog:
     - Add option to perform image optimization in background thread
     - Don''t optimize images when play/installation status changes
+  - Version: 1.5
+    RequiredApiVersion: 6.2.0
+    ReleaseDate: 2024-08-15
+    PackageUrl: https://github.com/UrbanCMC/PlayniteExtensions/releases/download/metadataimageoptimizer1.5/MetadataImageOptimizer_1_5.pext
+    Changelog:
+    - Fix crash when accessing queue file from multiple threads

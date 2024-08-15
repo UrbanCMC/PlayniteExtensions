@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows.Controls;
 using MetadataImageOptimizer.Settings;
 using MetadataImageOptimizer.Views;
@@ -49,11 +52,11 @@ namespace MetadataImageOptimizer
             // SOME kind of UI to be shown in the main menu if we're optimizing in the background
             // Gives users a way to kill it
             if (settings.Settings.RunInBackground &&
-                _backgroundOptimizeQueue.Count > 0)
+                backgroundOptimizeQueue.Count > 0)
             {
                 yield return new MainMenuItem()
                 {
-                    MenuSection = $"@MetadataImageOptimizer|Optimizing {_backgroundOptimizeQueue.Count} games",
+                    MenuSection = $"@MetadataImageOptimizer|Optimizing {backgroundOptimizeQueue.Count} games",
                     Description = "Cancel",
                     Action = (a) =>
                     {
@@ -73,22 +76,6 @@ namespace MetadataImageOptimizer
             return new MetadataImageOptimizerSettingsView();
         }
 
-        public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
-        {
-            var queueFileExists = File.Exists(_backgroundOptimizeQueueFilePath);
-
-            if (queueFileExists)
-            {
-                if (settings.Settings.RunInBackground)
-                {
-                    LoadBackgroundOptimizeQueueFromFile();
-                }
-                else
-                {
-                    File.Delete(_backgroundOptimizeQueueFilePath);
-                }
-            }
-        }
 
         private void OnGameUpdated(object sender, ItemUpdatedEventArgs<Game> e)
         {
@@ -200,8 +187,8 @@ namespace MetadataImageOptimizer
                 {
                     QueueOptimizeGame(game.Id, backgroundChanged, coverChanged, iconChanged);
                 }
-                else 
-                { 
+                else
+                {
                     OptimizeGame(game.Id, backgroundChanged, coverChanged, iconChanged);
                 }
             }
@@ -213,7 +200,7 @@ namespace MetadataImageOptimizer
             var optimizerSettings = settings.Settings;
 
             // Ensure we have the latest copy of {game}
-            var game = this.api.Database.Games.Get(gameId);
+            var game = api.Database.Games.Get(gameId);
 
             if (game == null)
             {
@@ -264,7 +251,7 @@ namespace MetadataImageOptimizer
             }
 
             // Ensure we have the latest copy of {game} again in case it changed during the optimization
-            game = this.api.Database.Games.Get(gameId) ?? game;
+            game = api.Database.Games.Get(gameId) ?? game;
 
             if (newBackgroundPath != null && !string.Equals(newBackgroundPath, api.Database.GetFullFilePath(game.BackgroundImage), StringComparison.OrdinalIgnoreCase))
             {
@@ -297,32 +284,48 @@ namespace MetadataImageOptimizer
         }
 
         #region Background processing
-        private readonly System.Collections.Concurrent.ConcurrentQueue<Tuple<Guid, bool, bool, bool>> _backgroundOptimizeQueue =
-            new System.Collections.Concurrent.ConcurrentQueue<Tuple<Guid, bool, bool, bool>>();
-        private System.Threading.Thread _backgroundOptimizeThread = null;
-        private string _backgroundOptimizeQueueFilePath => Path.Combine(this.GetPluginUserDataPath(), "optimize-queue");
+
+        private readonly ConcurrentQueue<Tuple<Guid, bool, bool, bool>> backgroundOptimizeQueue =
+            new ConcurrentQueue<Tuple<Guid, bool, bool, bool>>();
+        private Thread backgroundOptimizeThread;
+        private string BackgroundOptimizeQueueFilePath => Path.Combine(GetPluginUserDataPath(), "optimize-queue");
+
+        public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
+        {
+            var queueFileExists = File.Exists(BackgroundOptimizeQueueFilePath);
+            if (queueFileExists)
+            {
+                if (settings.Settings.RunInBackground)
+                {
+                    LoadBackgroundOptimizeQueueFromFile();
+                }
+                else
+                {
+                    File.Delete(BackgroundOptimizeQueueFilePath);
+                }
+            }
+        }
 
         private void QueueOptimizeGame(Guid gameId, bool optimizeBackground, bool optimizeCover, bool optimizeIcon)
         {
             var queueItem = Tuple.Create(gameId, optimizeBackground, optimizeCover, optimizeIcon);
 
-            File.AppendAllLines(_backgroundOptimizeQueueFilePath, new[] { $"{queueItem.Item1},{queueItem.Item2},{queueItem.Item3},{queueItem.Item4}" });
-            _backgroundOptimizeQueue.Enqueue(queueItem);
+            backgroundOptimizeQueue.Enqueue(queueItem);
 
             EnsureBackgroundThreadRunning();
         }
 
         private void EnsureBackgroundThreadRunning(bool force = false)
         {
-            if (_backgroundOptimizeThread != null && _backgroundOptimizeThread.IsAlive)
+            if (backgroundOptimizeThread != null && backgroundOptimizeThread.IsAlive)
             {
                 if (force)
                 {
                     try
                     {
-                        _backgroundOptimizeThread.Abort();
+                        backgroundOptimizeThread.Abort();
                     }
-                    catch (Exception) { }
+                    catch { }
                 }
                 else
                 {
@@ -330,17 +333,17 @@ namespace MetadataImageOptimizer
                 }
             }
 
-            _backgroundOptimizeThread = new System.Threading.Thread(BackgroundOptimizeThread_Run) 
+            backgroundOptimizeThread = new Thread(BackgroundOptimizeThread_Run)
             { IsBackground = true, Name = nameof(MetadataImageOptimizer) };
 
-            _backgroundOptimizeThread.Start();
+            backgroundOptimizeThread.Start();
         }
 
         private void BackgroundOptimizeThread_Run()
         {
             uint handled = 0u;
 
-            while (!Environment.HasShutdownStarted && _backgroundOptimizeQueue.TryDequeue(out var item))
+            while (!Environment.HasShutdownStarted && backgroundOptimizeQueue.TryDequeue(out var item))
             {
                 OptimizeGame(item.Item1, item.Item2, item.Item3, item.Item4);
 
@@ -357,11 +360,11 @@ namespace MetadataImageOptimizer
 
         private void ClearBackgroundOptimizeQueue()
         {
-            lock (_backgroundOptimizeQueue)
+            lock (backgroundOptimizeQueue)
             {
-                while (_backgroundOptimizeQueue.Count > 0)
+                while (backgroundOptimizeQueue.Count > 0)
                 {
-                    _backgroundOptimizeQueue.TryDequeue(out _);
+                    backgroundOptimizeQueue.TryDequeue(out _);
                 }
             }
 
@@ -370,7 +373,7 @@ namespace MetadataImageOptimizer
 
         private void LoadBackgroundOptimizeQueueFromFile()
         {
-            var lines = File.ReadAllLines(_backgroundOptimizeQueueFilePath);
+            var lines = File.ReadAllLines(BackgroundOptimizeQueueFilePath);
 
             foreach (var line in lines)
             {
@@ -382,7 +385,7 @@ namespace MetadataImageOptimizer
                     bool.TryParse(parts[2], out var optimizeCover) &&
                     bool.TryParse(parts[3], out var optimizeIcon))
                 {
-                    _backgroundOptimizeQueue.Enqueue(Tuple.Create(gameId, optimizeBackground, optimizeCover, optimizeIcon));
+                    backgroundOptimizeQueue.Enqueue(Tuple.Create(gameId, optimizeBackground, optimizeCover, optimizeIcon));
                 }
                 else
                 {
@@ -395,11 +398,11 @@ namespace MetadataImageOptimizer
 
         private void SaveBackgroundOptimizeQueueToFile()
         {
-            lock (_backgroundOptimizeQueue)
+            lock (backgroundOptimizeQueue)
             {
                 File.WriteAllLines(
-                    _backgroundOptimizeQueueFilePath,
-                    _backgroundOptimizeQueue.Select(queueItem => $"{queueItem.Item1},{queueItem.Item2},{queueItem.Item3},{queueItem.Item4}"));
+                    BackgroundOptimizeQueueFilePath,
+                    backgroundOptimizeQueue.Select(queueItem => $"{queueItem.Item1},{queueItem.Item2},{queueItem.Item3},{queueItem.Item4}"));
             }
         }
         #endregion
