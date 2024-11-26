@@ -43,3 +43,9 @@ Packages:
     PackageUrl: https://github.com/UrbanCMC/PlayniteExtensions/releases/download/metadataimageoptimizer1.5/MetadataImageOptimizer_1_5.pext
     Changelog:
     - Fix crash when accessing queue file from multiple threads
+  - Version: 1.6
+    RequiredApiVersion: 6.2.0
+    ReleaseDate: 2024-11-26
+    PackageUrl: https://github.com/UrbanCMC/PlayniteExtensions/releases/download/metadataimageoptimizer1.5/MetadataImageOptimizer_1_6.pext
+    Changelog:
+    - Fix error that breaks images when editing a game that is being processed in the background

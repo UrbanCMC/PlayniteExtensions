@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -23,6 +22,7 @@ namespace MetadataImageOptimizer
         private readonly IPlayniteAPI api;
 
         private MetadataImageOptimizerSettingsViewModel settings { get; set; }
+        private Guid inProcessGameId;
 
         public override Guid Id { get; } = Guid.Parse("17b571ff-6ffe-4bea-ad25-32e52b54f9d3");
 
@@ -90,6 +90,10 @@ namespace MetadataImageOptimizer
                         && change.OldData.IsLaunching == change.NewData.IsLaunching
                         && change.OldData.IsRunning == change.NewData.IsRunning
                         && change.OldData.IsUninstalling == change.NewData.IsUninstalling)
+                .ToList();
+
+            // Ignore the game we are currently updating
+            gamesToUpdate = gamesToUpdate.Where(change => change.OldData.Id != inProcessGameId)
                 .ToList();
 
             if (!optimizerSettings.AlwaysOptimizeOnSave)
@@ -202,7 +206,6 @@ namespace MetadataImageOptimizer
 
             // Ensure we have the latest copy of {game}
             var game = api.Database.Games.Get(gameId);
-
             if (game == null)
             {
                 return;
@@ -256,7 +259,6 @@ namespace MetadataImageOptimizer
 
             if (newBackgroundPath != null && !string.Equals(newBackgroundPath, api.Database.GetFullFilePath(game.BackgroundImage), StringComparison.OrdinalIgnoreCase))
             {
-                api.Database.RemoveFile(game.BackgroundImage);
                 game.BackgroundImage = api.Database.AddFile(newBackgroundPath, game.Id);
                 File.Delete(newBackgroundPath);
                 modified = true;
@@ -264,7 +266,6 @@ namespace MetadataImageOptimizer
 
             if (newCoverPath != null && !string.Equals(newCoverPath, api.Database.GetFullFilePath(game.CoverImage), StringComparison.OrdinalIgnoreCase))
             {
-                api.Database.RemoveFile(game.CoverImage);
                 game.CoverImage = api.Database.AddFile(newCoverPath, game.Id);
                 File.Delete(newCoverPath);
                 modified = true;
@@ -272,7 +273,6 @@ namespace MetadataImageOptimizer
 
             if (newIconPath != null && !string.Equals(newIconPath, api.Database.GetFullFilePath(game.Icon), StringComparison.OrdinalIgnoreCase))
             {
-                api.Database.RemoveFile(game.Icon);
                 game.Icon = api.Database.AddFile(newIconPath, game.Id);
                 File.Delete(newIconPath);
                 modified = true;
@@ -310,7 +310,17 @@ namespace MetadataImageOptimizer
         {
             var queueItem = new OptimizeQueueItem(gameId, optimizeBackground, optimizeCover, optimizeIcon);
 
-            backgroundOptimizeQueue.Enqueue(queueItem);
+            var existingItem = backgroundOptimizeQueue.FirstOrDefault(x => x.GameId == gameId);
+            if (existingItem != null)
+            {
+                existingItem.OptimizeBackground |= optimizeBackground;
+                existingItem.OptimizeCover |= optimizeCover;
+                existingItem.OptimizeIcon |= optimizeIcon;
+            }
+            else
+            {
+                backgroundOptimizeQueue.Enqueue(queueItem);
+            }
 
             EnsureBackgroundThreadRunning();
         }
@@ -345,6 +355,7 @@ namespace MetadataImageOptimizer
 
             while (!Environment.HasShutdownStarted && backgroundOptimizeQueue.TryDequeue(out var item))
             {
+                inProcessGameId = item.GameId;
                 OptimizeGame(item.GameId, item.OptimizeBackground, item.OptimizeCover, item.OptimizeIcon);
 
                 if (++handled % 100u == 0u)
@@ -355,6 +366,7 @@ namespace MetadataImageOptimizer
                 }
             }
 
+            inProcessGameId = Guid.Empty;
             SaveBackgroundOptimizeQueueToFile();
         }
 

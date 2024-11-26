@@ -13,14 +13,8 @@ namespace MetadataImageOptimizer.Models
         }
 
         public Guid GameId { get; set; }
-        public bool IsRemoved { get; private set; }
         public bool OptimizeBackground { get; set; }
         public bool OptimizeCover { get; set; }
         public bool OptimizeIcon { get; set; }
-
-        public void Remove()
-        {
-            IsRemoved = true;
-        }
     }
 }
