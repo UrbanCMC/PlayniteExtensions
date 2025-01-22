@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Controls;
+using MetadataImageOptimizer.Addons;
+using MetadataImageOptimizer.Addons.BackgroundChanger;
 using MetadataImageOptimizer.Models;
 using MetadataImageOptimizer.Settings;
 using MetadataImageOptimizer.Views;
@@ -20,6 +22,7 @@ namespace MetadataImageOptimizer
         private static readonly ILogger logger = LogManager.GetLogger();
 
         private readonly IPlayniteAPI api;
+        private readonly List<SupportedAddonBase> supportedAddons;
 
         private MetadataImageOptimizerSettingsViewModel settings { get; set; }
         private Guid inProcessGameId;
@@ -30,6 +33,7 @@ namespace MetadataImageOptimizer
         {
             this.api = api;
             settings = new MetadataImageOptimizerSettingsViewModel(this);
+            supportedAddons = new List<SupportedAddonBase> { new BackgroundChangerOptimizer(api, settings.Settings) };
             Properties = new GenericPluginProperties { HasSettings = true };
 
             api.Database.Games.ItemUpdated += OnGameUpdated;
@@ -277,6 +281,9 @@ namespace MetadataImageOptimizer
                 File.Delete(newIconPath);
                 modified = true;
             }
+
+            // Process images from supported addons
+            supportedAddons.Where(x => x.IsInstalled).ForEach(addon => addon.OptimizeImages(game.Id));
 
             if (modified)
             {
