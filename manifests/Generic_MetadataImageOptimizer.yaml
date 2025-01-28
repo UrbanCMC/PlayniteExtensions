@@ -51,7 +51,7 @@ Packages:
     - Fix error that breaks images when editing a game that is being processed in the background
   - Version: 1.7
     RequiredApiVersion: 6.2.0
-    ReleaseDate: 2025-01-16
+    ReleaseDate: 2025-01-28
     PackageUrl: https://github.com/UrbanCMC/PlayniteExtensions/releases/download/metadataimageoptimizer1.7/MetadataImageOptimizer_1_7.pext
     Changelog:
-    - Add support for optimizing images from the BackgroundChanger addon
+    - Add support for optimizing images from the BackgroundChanger addon. Must be enabled in the add-on settings

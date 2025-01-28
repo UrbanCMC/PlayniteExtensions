@@ -9,6 +9,7 @@ namespace MetadataImageOptimizer.Settings
     {
         private bool alwaysOptimizeOnSave;
         private bool runInBackground;
+        private AddonSettings addonSettings;
         private ImageTypeSettings background;
         private ImageTypeSettings cover;
         private ImageTypeSettings icon;
@@ -29,6 +30,7 @@ namespace MetadataImageOptimizer.Settings
 
         public bool AlwaysOptimizeOnSave { get => alwaysOptimizeOnSave; set => SetValue(ref alwaysOptimizeOnSave, value); }
         public bool RunInBackground { get => runInBackground; set => SetValue(ref runInBackground, value); }
+        public AddonSettings AddonSettings { get => addonSettings; set => SetValue(ref addonSettings, value); }
         public ImageTypeSettings Background { get => background; set => SetValue(ref background, value); }
         public ImageTypeSettings Cover { get => cover; set => SetValue(ref cover, value); }
         public ImageTypeSettings Icon { get => icon; set => SetValue(ref icon, value); }
@@ -36,6 +38,11 @@ namespace MetadataImageOptimizer.Settings
 
         private void SetDefaults()
         {
+            addonSettings = new AddonSettings
+            {
+                BackgroundChangerOptimize = false
+            };
+
             background = new ImageTypeSettings
             {
                 Format = "jpg"

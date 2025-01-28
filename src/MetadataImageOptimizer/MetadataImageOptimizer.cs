@@ -24,7 +24,7 @@ namespace MetadataImageOptimizer
         private readonly IPlayniteAPI api;
         private readonly List<SupportedAddonBase> supportedAddons;
 
-        private MetadataImageOptimizerSettingsViewModel settings { get; set; }
+        private MetadataImageOptimizerSettingsViewModel settingsVm { get; set; }
         private Guid inProcessGameId;
 
         public override Guid Id { get; } = Guid.Parse("17b571ff-6ffe-4bea-ad25-32e52b54f9d3");
@@ -32,8 +32,8 @@ namespace MetadataImageOptimizer
         public MetadataImageOptimizer(IPlayniteAPI api) : base(api)
         {
             this.api = api;
-            settings = new MetadataImageOptimizerSettingsViewModel(this);
-            supportedAddons = new List<SupportedAddonBase> { new BackgroundChangerOptimizer(api, settings.Settings) };
+            settingsVm = new MetadataImageOptimizerSettingsViewModel(this);
+            supportedAddons = new List<SupportedAddonBase> { new BackgroundChangerOptimizer(api, settingsVm) };
             Properties = new GenericPluginProperties { HasSettings = true };
 
             api.Database.Games.ItemUpdated += OnGameUpdated;
@@ -47,7 +47,7 @@ namespace MetadataImageOptimizer
                 MenuSection = "MetadataImageOptimizer",
                 Action = actionArgs =>
                 {
-                    OptimizeGames(actionArgs.Games, settings.Settings);
+                    OptimizeGames(actionArgs.Games, settingsVm.Settings);
                 }
             };
         }
@@ -56,7 +56,7 @@ namespace MetadataImageOptimizer
         {
             // SOME kind of UI to be shown in the main menu if we're optimizing in the background
             // Gives users a way to kill it
-            if (settings.Settings.RunInBackground &&
+            if (settingsVm.Settings.RunInBackground &&
                 backgroundOptimizeQueue.Count > 0)
             {
                 yield return new MainMenuItem()
@@ -73,7 +73,7 @@ namespace MetadataImageOptimizer
 
         public override ISettings GetSettings(bool firstRunSettings)
         {
-            return settings;
+            return settingsVm;
         }
 
         public override UserControl GetSettingsView(bool firstRunSettings)
@@ -84,7 +84,7 @@ namespace MetadataImageOptimizer
 
         private void OnGameUpdated(object sender, ItemUpdatedEventArgs<Game> e)
         {
-            var optimizerSettings = settings.Settings;
+            var optimizerSettings = settingsVm.Settings;
             var gamesToUpdate = e.UpdatedItems;
 
             // Ignore games where the playing/installing status was updated
@@ -206,7 +206,7 @@ namespace MetadataImageOptimizer
         private void OptimizeGame(Guid gameId, bool optimizeBackground, bool optimizeCover, bool optimizeIcon)
         {
             var modified = false;
-            var optimizerSettings = settings.Settings;
+            var optimizerSettings = settingsVm.Settings;
 
             // Ensure we have the latest copy of {game}
             var game = api.Database.Games.Get(gameId);
@@ -302,7 +302,7 @@ namespace MetadataImageOptimizer
             var queueFileExists = File.Exists(BackgroundOptimizeQueueFilePath);
             if (queueFileExists)
             {
-                if (settings.Settings.RunInBackground)
+                if (settingsVm.Settings.RunInBackground)
                 {
                     LoadBackgroundOptimizeQueueFromFile();
                 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using MetadataImageOptimizer.Addons.BackgroundChanger.Model;
 using MetadataImageOptimizer.Settings;
+using MetadataImageOptimizer.Views;
 using Playnite.SDK;
 using Playnite.SDK.Data;
 
@@ -17,17 +18,17 @@ namespace MetadataImageOptimizer.Addons.BackgroundChanger
 
         private readonly IPlayniteAPI api;
         private readonly string imageBasePath;
-        private readonly MetadataImageOptimizerSettings settings;
+        private readonly MetadataImageOptimizerSettingsViewModel settingsVm;
 
         private object backgroundChangerDb;
         private Func<Guid, bool, bool, object> getGameConfigFunc;
         private MethodInfo updateMethodInfo;
 
-        public BackgroundChangerOptimizer(IPlayniteAPI api, MetadataImageOptimizerSettings settings)
+        public BackgroundChangerOptimizer(IPlayniteAPI api, MetadataImageOptimizerSettingsViewModel settingsVm)
         {
             this.api = api;
             imageBasePath = api.Paths.ExtensionsDataPath + $@"\{ExtensionId}\Images";
-            this.settings = settings;
+            this.settingsVm = settingsVm;
         }
 
         public override Guid ExtensionId { get; } = new Guid("3afdd02b-db6c-4b60-8faa-2971d6dfad2a");
@@ -35,32 +36,58 @@ namespace MetadataImageOptimizer.Addons.BackgroundChanger
 
         public override void OptimizeImages(Guid gameId)
         {
+            if (!settingsVm.Settings.AddonSettings.BackgroundChangerOptimize)
+            {
+                return;
+            }
+
             var gameConfigPath = api.Paths.ExtensionsDataPath + $@"\{ExtensionId}\BackgroundChanger\{gameId}.json";
             if (!File.Exists(gameConfigPath))
             {
                 return;
             }
 
+            // Ensure required reflection objects exist
+            if (!FindBackgroundChangerDb())
+            {
+                DisableBackgroundChangerOptimize();
+                return;
+            }
+
             var gameConfig = Serialization.FromJsonFile<GameConfig>(gameConfigPath);
             foreach (var image in gameConfig.Items.Where(x => !string.IsNullOrWhiteSpace(x.FolderName)))
             {
-                if (!image.IsCover && settings.Background.Optimize)
+                if (!image.IsCover && settingsVm.Settings.Background.Optimize)
                 {
-                    OptimizeImage(image, settings.Background);
+                    OptimizeImage(image, settingsVm.Settings.Background);
                 }
-                else if (image.IsCover && settings.Cover.Optimize)
+                else if (image.IsCover && settingsVm.Settings.Cover.Optimize)
                 {
-                    OptimizeImage(image, settings.Cover);
+                    OptimizeImage(image, settingsVm.Settings.Cover);
                 }
             }
 
-            RefreshBackgroundChangerDB(gameId, gameConfig);
+            if (!RefreshBackgroundChangerDB(gameId, gameConfig))
+            {
+                DisableBackgroundChangerOptimize();
+            }
+        }
+
+        private void DisableBackgroundChangerOptimize()
+        {
+            // Current version of background changer is not compatible!
+            api.Notifications.Add(
+                "metadataimageoptimizer-backgroundchanger-incompatible"
+                , "This version of MetadataImageOptimizer is not compatible with your version of BackgroundChanger!\nThe 'Optimize' setting for BackgroundChanger has been turned off."
+                , NotificationType.Error);
+            settingsVm.Settings.AddonSettings.BackgroundChangerOptimize = false;
+            settingsVm.EndEdit();
         }
 
         private void OptimizeImage(GameImage image, ImageTypeSettings imageSettings)
         {
             var imagePath = Path.Combine(imageBasePath, image.FolderName, image.Name);
-            var tmpPath = ImageOptimizer.Optimize(imagePath, imageSettings, settings.Quality);
+            var tmpPath = ImageOptimizer.Optimize(imagePath, imageSettings, settingsVm.Settings.Quality);
             if (tmpPath == imagePath)
             {
                 return;
@@ -72,32 +99,32 @@ namespace MetadataImageOptimizer.Addons.BackgroundChanger
             image.Name = Path.GetFileName(optimizedPath);
         }
 
-        private void FindBackgroundChangerDb()
+        private bool FindBackgroundChangerDb()
         {
             if (backgroundChangerDb != null)
             {
-                return;
+                return true;
             }
 
             var bcType = Type.GetType($"BackgroundChanger.BackgroundChanger, {BackgroundChangerAssemblyName}");
             if (bcType == null)
             {
                 logger.Warn("Failed to find BackgroundChanger through reflection. Most likely this indicates a change in the addon.");
-                return;
+                return false;
             }
 
             var pluginType = Type.GetType($"BackgroundChanger.Controls.PluginBackgroundImage, {BackgroundChangerAssemblyName}");
             if (pluginType == null)
             {
                 logger.Warn("Failed to find PluginBackgroundImage through reflection. Most likely this indicates a change in the addon.");
-                return;
+                return false;
             }
 
             var pluginDbProp = pluginType.GetProperty("PluginDatabase", BindingFlags.Static | BindingFlags.NonPublic);
             if (pluginDbProp == null)
             {
                 logger.Warn("Failed to find PluginDatabase through reflection. Most likely this indicates a change in the addon.");
-                return;
+                return false;
             }
 
             backgroundChangerDb =  pluginDbProp.GetValue(null);
@@ -106,30 +133,28 @@ namespace MetadataImageOptimizer.Addons.BackgroundChanger
             if (getMethod == null)
             {
                 logger.Warn("Failed to find PluginDatabase.Get through reflection. Most likely this indicates a change in the addon.");
-                return;
+                return false;
             }
 
             var updateMethod = backgroundChangerDb.GetType().GetMethod("Update", BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
             if (updateMethod == null)
             {
                 logger.Warn("Failed to find PluginDatabase.Update through reflection. Most likely this indicates a change in the addon.");
-                return;
+                return false;
             }
 
             getGameConfigFunc = (Func<Guid, bool, bool, object>)Delegate.CreateDelegate(typeof(Func<Guid, bool, bool, object>), backgroundChangerDb, getMethod);
             updateMethodInfo = updateMethod;
+            return true;
         }
 
-        private void RefreshBackgroundChangerDB(Guid gameId, GameConfig config)
+        private bool RefreshBackgroundChangerDB(Guid gameId, GameConfig config)
         {
-            // Ensure required reflection objects exist
-            FindBackgroundChangerDb();
-
             var itemImageType = Type.GetType($"BackgroundChanger.Models.ItemImage, {BackgroundChangerAssemblyName}");
             if (itemImageType == null)
             {
                 logger.Warn("Failed to find ItemImageType through reflection. Most likely this indicates a change in the addon.");
-                return;
+                return false;
             }
 
             dynamic dbConfig = getGameConfigFunc(gameId, false, false);
@@ -148,6 +173,7 @@ namespace MetadataImageOptimizer.Addons.BackgroundChanger
             }
 
             updateMethodInfo.Invoke(backgroundChangerDb, new[] { dbConfig });
+            return true;
         }
     }
 }

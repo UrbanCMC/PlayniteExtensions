@@ -14,5 +14,8 @@
     <TabItem Header="Quality">
       <locals:QualitySettingsView DataContext="{Binding}" />
     </TabItem>
+    <TabItem Header="Add-ons">
+      <locals:AddonSettingsView DataContext="{Binding}" />
+    </TabItem>
   </TabControl>
 </UserControl>
