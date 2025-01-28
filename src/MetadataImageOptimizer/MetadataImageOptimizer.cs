@@ -263,6 +263,7 @@ namespace MetadataImageOptimizer
 
             if (newBackgroundPath != null && !string.Equals(newBackgroundPath, api.Database.GetFullFilePath(game.BackgroundImage), StringComparison.OrdinalIgnoreCase))
             {
+                PlayniteApi.Database.RemoveFile(game.BackgroundImage);
                 game.BackgroundImage = api.Database.AddFile(newBackgroundPath, game.Id);
                 File.Delete(newBackgroundPath);
                 modified = true;
@@ -270,6 +271,7 @@ namespace MetadataImageOptimizer
 
             if (newCoverPath != null && !string.Equals(newCoverPath, api.Database.GetFullFilePath(game.CoverImage), StringComparison.OrdinalIgnoreCase))
             {
+                PlayniteApi.Database.RemoveFile(game.CoverImage);
                 game.CoverImage = api.Database.AddFile(newCoverPath, game.Id);
                 File.Delete(newCoverPath);
                 modified = true;
@@ -277,6 +279,7 @@ namespace MetadataImageOptimizer
 
             if (newIconPath != null && !string.Equals(newIconPath, api.Database.GetFullFilePath(game.Icon), StringComparison.OrdinalIgnoreCase))
             {
+                PlayniteApi.Database.RemoveFile(game.Icon);
                 game.Icon = api.Database.AddFile(newIconPath, game.Id);
                 File.Delete(newIconPath);
                 modified = true;

@@ -55,3 +55,4 @@ Packages:
     PackageUrl: https://github.com/UrbanCMC/PlayniteExtensions/releases/download/metadataimageoptimizer1.7/MetadataImageOptimizer_1_7.pext
     Changelog:
     - Add support for optimizing images from the BackgroundChanger addon. Must be enabled in the add-on settings
+    - Fix old images not being deleted when converting to a new format
