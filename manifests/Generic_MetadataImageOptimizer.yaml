@@ -56,3 +56,9 @@ Packages:
     Changelog:
     - Add support for optimizing images from the BackgroundChanger addon. Must be enabled in the add-on settings
     - Fix old images not being deleted when converting to a new format
+  - Version: 1.8
+    RequiredApiVersion: 6.2.0
+    ReleaseDate: TBD
+    PackageUrl: https://github.com/UrbanCMC/PlayniteExtensions/releases/download/metadataimageoptimizer1.8/MetadataImageOptimizer_1_8.pext
+    Changelog:
+    - Fix background optimization not stopping when turning the setting off

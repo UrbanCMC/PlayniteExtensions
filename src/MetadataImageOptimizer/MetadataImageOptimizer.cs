@@ -374,6 +374,18 @@ namespace MetadataImageOptimizer
                     // We don't do it EVERY file because then we'd be potentially hammering the disk
                     SaveBackgroundOptimizeQueueToFile();
                 }
+
+                if (!settingsVm.Settings.RunInBackground)
+                {
+                    // Clear remaining queue if background processing is turned off
+                    logger.Info($"Background processing was turned off. Cleared queue of {backgroundOptimizeQueue.Count} items.");
+                    api.Dialogs.ShowMessage(
+                        $"Background processing was turned off. Cleared queue of {backgroundOptimizeQueue.Count} items."
+                        , "MetadataImageOptimizer - Stopped background processing");
+                    ClearBackgroundOptimizeQueue();
+                    inProcessGameId = Guid.Empty;
+                    return;
+                }
             }
 
             inProcessGameId = Guid.Empty;
