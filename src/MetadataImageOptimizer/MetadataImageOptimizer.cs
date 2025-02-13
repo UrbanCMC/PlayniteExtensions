@@ -158,6 +158,7 @@ namespace MetadataImageOptimizer
                         , optimizerSettings.Icon.Optimize);
                 }
 
+                logger.Info($"Added {games.Count} games to queue.");
                 api.Dialogs.ShowMessage($"Queued up {games.Count} games to optimize. Optimizing in the background.", "Queued up optimization");
             }
             else
@@ -219,6 +220,7 @@ namespace MetadataImageOptimizer
             string newCoverPath = null;
             string newIconPath = null;
 
+            logger.Debug($"Processing '{game.Name}'. Background: {optimizeBackground} | Cover: {optimizeCover} | Icon: {optimizeIcon}");
             if (optimizeBackground && !string.IsNullOrWhiteSpace(game.BackgroundImage))
             {
                 try
@@ -318,8 +320,6 @@ namespace MetadataImageOptimizer
 
         private void QueueOptimizeGame(Guid gameId, bool optimizeBackground, bool optimizeCover, bool optimizeIcon)
         {
-            var queueItem = new OptimizeQueueItem(gameId, optimizeBackground, optimizeCover, optimizeIcon);
-
             var existingItem = backgroundOptimizeQueue.FirstOrDefault(x => x.GameId == gameId);
             if (existingItem != null)
             {
@@ -329,6 +329,7 @@ namespace MetadataImageOptimizer
             }
             else
             {
+                var queueItem = new OptimizeQueueItem(gameId, optimizeBackground, optimizeCover, optimizeIcon);
                 backgroundOptimizeQueue.Enqueue(queueItem);
             }
 
@@ -362,6 +363,11 @@ namespace MetadataImageOptimizer
         private void BackgroundOptimizeThread_Run()
         {
             var handled = 0u;
+
+            if (backgroundOptimizeQueue.IsEmpty)
+            {
+                return;
+            }
 
             while (!Environment.HasShutdownStarted && backgroundOptimizeQueue.TryDequeue(out var item))
             {
@@ -408,6 +414,7 @@ namespace MetadataImageOptimizer
         private void LoadBackgroundOptimizeQueueFromFile()
         {
             var lines = File.ReadAllLines(BackgroundOptimizeQueueFilePath);
+            logger.Info($"Loading queue from disk with {lines.Length} items...");
 
             foreach (var line in lines)
             {

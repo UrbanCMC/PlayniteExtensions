@@ -54,22 +54,30 @@ namespace MetadataImageOptimizer.Addons.BackgroundChanger
                 return;
             }
 
-            var gameConfig = Serialization.FromJsonFile<GameConfig>(gameConfigPath);
-            foreach (var image in gameConfig.Items.Where(x => !string.IsNullOrWhiteSpace(x.FolderName)))
+            try
             {
-                if (!image.IsCover && settingsVm.Settings.Background.Optimize)
+                var gameConfig = Serialization.FromJsonFile<GameConfig>(gameConfigPath);
+                foreach (var image in gameConfig.Items.Where(x => !string.IsNullOrWhiteSpace(x.FolderName)))
                 {
-                    OptimizeImage(image, settingsVm.Settings.Background);
+                    if (!image.IsCover && settingsVm.Settings.Background.Optimize)
+                    {
+                        OptimizeImage(image, settingsVm.Settings.Background);
+                    }
+                    else if (image.IsCover && settingsVm.Settings.Cover.Optimize)
+                    {
+                        OptimizeImage(image, settingsVm.Settings.Cover);
+                    }
                 }
-                else if (image.IsCover && settingsVm.Settings.Cover.Optimize)
+
+                if (!RefreshBackgroundChangerDB(gameId, gameConfig))
                 {
-                    OptimizeImage(image, settingsVm.Settings.Cover);
+                    DisableBackgroundChangerOptimize();
                 }
             }
-
-            if (!RefreshBackgroundChangerDB(gameId, gameConfig))
+            catch (Exception ex)
             {
-                DisableBackgroundChangerOptimize();
+                var game = api.Database.Games.Get(gameId);
+                logger.Error(ex, $"Error while optimizing BackgroundChanger images for '{game.Name}'.");
             }
         }
 

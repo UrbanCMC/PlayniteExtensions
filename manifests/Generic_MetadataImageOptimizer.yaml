@@ -62,3 +62,4 @@ Packages:
     PackageUrl: https://github.com/UrbanCMC/PlayniteExtensions/releases/download/metadataimageoptimizer1.8/MetadataImageOptimizer_1_8.pext
     Changelog:
     - Fix background optimization not stopping when turning the setting off
+    - Add more logging and handle errors when optimizing BackgroundChanger images
