@@ -7,6 +7,7 @@ using System.Threading;
 using System.Windows.Controls;
 using MetadataImageOptimizer.Addons;
 using MetadataImageOptimizer.Addons.BackgroundChanger;
+using MetadataImageOptimizer.Helpers;
 using MetadataImageOptimizer.Models;
 using MetadataImageOptimizer.Settings;
 using MetadataImageOptimizer.Views;
@@ -81,6 +82,31 @@ namespace MetadataImageOptimizer
             return new MetadataImageOptimizerSettingsView();
         }
 
+        public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
+        {
+            base.OnApplicationStarted(args);
+
+            OptimizationCacheHelper.Load(api, GetPluginUserDataPath());
+
+            if (File.Exists(BackgroundOptimizeQueueFilePath))
+            {
+                if (settingsVm.Settings.RunInBackground)
+                {
+                    LoadBackgroundOptimizeQueueFromFile();
+                }
+                else
+                {
+                    File.Delete(BackgroundOptimizeQueueFilePath);
+                }
+            }
+        }
+
+        public override void OnApplicationStopped(OnApplicationStoppedEventArgs args)
+        {
+            base.OnApplicationStopped(args);
+
+            OptimizationCacheHelper.Save();
+        }
 
         private void OnGameUpdated(object sender, ItemUpdatedEventArgs<Game> e)
         {
@@ -206,13 +232,19 @@ namespace MetadataImageOptimizer
 
         private void OptimizeGame(Guid gameId, bool optimizeBackground, bool optimizeCover, bool optimizeIcon)
         {
-            var modified = false;
+            var pathsChanged = false;
             var optimizerSettings = settingsVm.Settings;
 
             // Ensure we have the latest copy of {game}
             var game = api.Database.Games.Get(gameId);
             if (game == null)
             {
+                return;
+            }
+
+            if (!OptimizationCacheHelper.IsCheckNecessary(game))
+            {
+                logger.Debug($"Skipping '{game.Name}'. No change from previously cached information.");
                 return;
             }
 
@@ -268,7 +300,7 @@ namespace MetadataImageOptimizer
                 PlayniteApi.Database.RemoveFile(game.BackgroundImage);
                 game.BackgroundImage = api.Database.AddFile(newBackgroundPath, game.Id);
                 File.Delete(newBackgroundPath);
-                modified = true;
+                pathsChanged = true;
             }
 
             if (newCoverPath != null && !string.Equals(newCoverPath, api.Database.GetFullFilePath(game.CoverImage), StringComparison.OrdinalIgnoreCase))
@@ -276,7 +308,7 @@ namespace MetadataImageOptimizer
                 PlayniteApi.Database.RemoveFile(game.CoverImage);
                 game.CoverImage = api.Database.AddFile(newCoverPath, game.Id);
                 File.Delete(newCoverPath);
-                modified = true;
+                pathsChanged = true;
             }
 
             if (newIconPath != null && !string.Equals(newIconPath, api.Database.GetFullFilePath(game.Icon), StringComparison.OrdinalIgnoreCase))
@@ -284,16 +316,18 @@ namespace MetadataImageOptimizer
                 PlayniteApi.Database.RemoveFile(game.Icon);
                 game.Icon = api.Database.AddFile(newIconPath, game.Id);
                 File.Delete(newIconPath);
-                modified = true;
+                pathsChanged = true;
             }
 
             // Process images from supported addons
             supportedAddons.Where(x => x.IsInstalled).ForEach(addon => addon.OptimizeImages(game.Id));
 
-            if (modified)
+            if (pathsChanged)
             {
                 api.Database.Games.Update(game);
             }
+
+            OptimizationCacheHelper.Add(game);
         }
 
         #region Background processing
@@ -301,22 +335,6 @@ namespace MetadataImageOptimizer
         private readonly ConcurrentQueue<OptimizeQueueItem> backgroundOptimizeQueue = new ConcurrentQueue<OptimizeQueueItem>();
         private Thread backgroundOptimizeThread;
         private string BackgroundOptimizeQueueFilePath => Path.Combine(GetPluginUserDataPath(), "optimize-queue");
-
-        public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
-        {
-            var queueFileExists = File.Exists(BackgroundOptimizeQueueFilePath);
-            if (queueFileExists)
-            {
-                if (settingsVm.Settings.RunInBackground)
-                {
-                    LoadBackgroundOptimizeQueueFromFile();
-                }
-                else
-                {
-                    File.Delete(BackgroundOptimizeQueueFilePath);
-                }
-            }
-        }
 
         private void QueueOptimizeGame(Guid gameId, bool optimizeBackground, bool optimizeCover, bool optimizeIcon)
         {

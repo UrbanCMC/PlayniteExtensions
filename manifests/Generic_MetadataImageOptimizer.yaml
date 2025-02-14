@@ -58,8 +58,9 @@ Packages:
     - Fix old images not being deleted when converting to a new format
   - Version: 1.8
     RequiredApiVersion: 6.2.0
-    ReleaseDate: TBD
+    ReleaseDate: 2025-02-14
     PackageUrl: https://github.com/UrbanCMC/PlayniteExtensions/releases/download/metadataimageoptimizer1.8/MetadataImageOptimizer_1_8.pext
     Changelog:
+    - Add cache to store information about optimized images, preventing unnecessary re-checks
     - Fix background optimization not stopping when turning the setting off
     - Add more logging and handle errors when optimizing BackgroundChanger images

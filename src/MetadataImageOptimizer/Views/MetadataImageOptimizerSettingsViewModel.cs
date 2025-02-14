@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MetadataImageOptimizer.Helpers;
 using MetadataImageOptimizer.Settings;
 using Playnite.SDK;
 using Playnite.SDK.Data;
@@ -38,6 +39,11 @@ namespace MetadataImageOptimizer.Views
 
         public void EndEdit()
         {
+            if (!Serialization.AreObjectsEqual(Settings, editingClone))
+            {
+                OptimizationCacheHelper.Clear();
+            }
+
             plugin.SavePluginSettings(Settings);
         }
 
