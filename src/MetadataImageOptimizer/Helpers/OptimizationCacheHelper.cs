@@ -24,13 +24,14 @@ namespace MetadataImageOptimizer.Helpers
         /// <param name="game">The game to add</param>
         public static void Add( Game game)
         {
-            var backgroundPath = api.Database.GetFullFilePath(game.BackgroundImage);
+            // Use folder path as fallback, which will be considered a non-existent file
+            var backgroundPath = string.IsNullOrWhiteSpace(game.BackgroundImage) ? "C:\\" : api.Database.GetFullFilePath(game.BackgroundImage);
             var backgroundFile = new FileInfo(backgroundPath);
 
-            var coverPath = api.Database.GetFullFilePath(game.CoverImage);
+            var coverPath = string.IsNullOrWhiteSpace(game.CoverImage) ? "C:\\" : api.Database.GetFullFilePath(game.CoverImage);
             var coverFile = new FileInfo(coverPath);
 
-            var iconPath = api.Database.GetFullFilePath(game.Icon);
+            var iconPath = string.IsNullOrWhiteSpace(game.Icon) ? "C:\\" : api.Database.GetFullFilePath(game.Icon);
             var iconFile = new FileInfo(iconPath);
 
             var existingCacheItem = OptimizationCache.FirstOrDefault(x => x.GameId == game.Id);
@@ -77,25 +78,34 @@ namespace MetadataImageOptimizer.Helpers
                 return true;
             }
 
-            var backgroundPath = api.Database.GetFullFilePath(game.BackgroundImage);
-            var backgroundFile = new FileInfo(backgroundPath);
-            if (backgroundFile.Exists && backgroundFile.Length != cacheItem.BackgroundFileSize)
+            if (!string.IsNullOrWhiteSpace(game.BackgroundImage))
             {
-                return true;
+                var backgroundPath = api.Database.GetFullFilePath(game.BackgroundImage);
+                var backgroundFile = new FileInfo(backgroundPath);
+                if (backgroundFile.Exists && backgroundFile.Length != cacheItem.BackgroundFileSize)
+                {
+                    return true;
+                }
             }
 
-            var coverPath = api.Database.GetFullFilePath(game.CoverImage);
-            var coverFile = new FileInfo(coverPath);
-            if (coverFile.Exists && coverFile.Length != cacheItem.CoverFileSize)
+            if (!string.IsNullOrWhiteSpace(game.CoverImage))
             {
-                return true;
+                var coverPath = api.Database.GetFullFilePath(game.CoverImage);
+                var coverFile = new FileInfo(coverPath);
+                if (coverFile.Exists && coverFile.Length != cacheItem.CoverFileSize)
+                {
+                    return true;
+                }
             }
 
-            var iconPath = api.Database.GetFullFilePath(game.Icon);
-            var iconFile = new FileInfo(iconPath);
-            if (iconFile.Exists && iconFile.Length != cacheItem.IconFileSize)
+            if (!string.IsNullOrWhiteSpace(game.Icon))
             {
-                return true;
+                var iconPath = api.Database.GetFullFilePath(game.Icon);
+                var iconFile = new FileInfo(iconPath);
+                if (iconFile.Exists && iconFile.Length != cacheItem.IconFileSize)
+                {
+                    return true;
+                }
             }
 
             return false;
