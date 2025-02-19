@@ -22,37 +22,56 @@ namespace MetadataImageOptimizer.Helpers
         /// Adds the specified game to the optimization cache
         /// </summary>
         /// <param name="game">The game to add</param>
-        public static void Add( Game game)
+        public static void Add(Game game)
         {
-            // Use folder path as fallback, which will be considered a non-existent file
-            var backgroundPath = string.IsNullOrWhiteSpace(game.BackgroundImage) ? "C:\\" : api.Database.GetFullFilePath(game.BackgroundImage);
-            var backgroundFile = new FileInfo(backgroundPath);
-
-            var coverPath = string.IsNullOrWhiteSpace(game.CoverImage) ? "C:\\" : api.Database.GetFullFilePath(game.CoverImage);
-            var coverFile = new FileInfo(coverPath);
-
-            var iconPath = string.IsNullOrWhiteSpace(game.Icon) ? "C:\\" : api.Database.GetFullFilePath(game.Icon);
-            var iconFile = new FileInfo(iconPath);
-
-            var existingCacheItem = OptimizationCache.FirstOrDefault(x => x.GameId == game.Id);
-            if (existingCacheItem != null)
+            try
             {
-                OptimizationCache.Remove(existingCacheItem);
+                // Use folder path as fallback, which will be considered a non-existent file
+                var backgroundPath = string.IsNullOrWhiteSpace(game.BackgroundImage) ? "C:\\" : api.Database.GetFullFilePath(game.BackgroundImage);
+                var backgroundFile = new FileInfo(backgroundPath);
 
-                existingCacheItem.BackgroundFileSize = backgroundFile.Exists ? backgroundFile.Length : 0;
-                existingCacheItem.CoverFileSize = coverFile.Exists ? coverFile.Length : 0;
-                existingCacheItem.IconFileSize = iconFile.Exists ? iconFile.Length : 0;
+                var coverPath = string.IsNullOrWhiteSpace(game.CoverImage) ? "C:\\" : api.Database.GetFullFilePath(game.CoverImage);
+                var coverFile = new FileInfo(coverPath);
 
-                OptimizationCache.Add(existingCacheItem);
+                var iconPath = string.IsNullOrWhiteSpace(game.Icon) ? "C:\\" : api.Database.GetFullFilePath(game.Icon);
+                var iconFile = new FileInfo(iconPath);
+
+                var existingCacheItem = OptimizationCache.FirstOrDefault(x => x.GameId == game.Id);
+                if (existingCacheItem != null)
+                {
+                    OptimizationCache.Remove(existingCacheItem);
+
+                    existingCacheItem.BackgroundFileSize = backgroundFile.Exists ? backgroundFile.Length : 0;
+                    existingCacheItem.CoverFileSize = coverFile.Exists ? coverFile.Length : 0;
+                    existingCacheItem.IconFileSize = iconFile.Exists ? iconFile.Length : 0;
+
+                    OptimizationCache.Add(existingCacheItem);
+                }
+                else
+                {
+                    var cacheItem = new OptimizationCacheItem(
+                        game.Id
+                        , backgroundFile.Exists ? backgroundFile.Length : 0
+                        , coverFile.Exists ? coverFile.Length : 0
+                        , iconFile.Exists ? iconFile.Length : 0);
+                    OptimizationCache.Add(cacheItem);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var cacheItem = new OptimizationCacheItem(
-                    game.Id
-                    , backgroundFile.Exists ? backgroundFile.Length : 0
-                    , coverFile.Exists ? coverFile.Length : 0
-                    , iconFile.Exists ? iconFile.Length : 0);
-                OptimizationCache.Add(cacheItem);
+                var errorMsg = "Failed to store game information in optimization cache.";
+                if (ex is ArgumentException)
+                {
+                    errorMsg += string.Format(
+                        "A path for '{0}' likely contains invalid characters.{1}Background: '{2}'{1}Cover: '{3}'{1}Icon: '{4}'"
+                        , game.Name
+                        , Environment.NewLine
+                        , game.BackgroundImage
+                        , game.CoverImage
+                        , game.Icon);
+                }
+
+                Logger.Error(ex, errorMsg);
             }
         }
 

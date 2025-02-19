@@ -70,3 +70,9 @@ Packages:
     PackageUrl: https://github.com/UrbanCMC/PlayniteExtensions/releases/download/metadataimageoptimizer1.9/MetadataImageOptimizer_1_9.pext
     Changelog:
     - Fix crash when a game does not have a background/cover/icon image set
+  - Version: 1.10
+    RequiredApiVersion: 6.2.0
+    ReleaseDate: TBD
+    PackageUrl: https://github.com/UrbanCMC/PlayniteExtensions/releases/download/metadataimageoptimizer1.10/MetadataImageOptimizer_1_10.pext
+    Changelog:
+    - Fix crash when images use paths not supported by the file system. These cases will be logged with additional information.
