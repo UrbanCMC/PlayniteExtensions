@@ -36,8 +36,6 @@ namespace MetadataImageOptimizer
             settingsVm = new MetadataImageOptimizerSettingsViewModel(this);
             supportedAddons = new List<SupportedAddonBase> { new BackgroundChangerOptimizer(api, settingsVm) };
             Properties = new GenericPluginProperties { HasSettings = true };
-
-            api.Database.Games.ItemUpdated += OnGameUpdated;
         }
 
         public override IEnumerable<GameMenuItem> GetGameMenuItems(GetGameMenuItemsArgs args)
@@ -99,12 +97,15 @@ namespace MetadataImageOptimizer
                     File.Delete(BackgroundOptimizeQueueFilePath);
                 }
             }
+
+            api.Database.Games.ItemUpdated += OnGameUpdated;
         }
 
         public override void OnApplicationStopped(OnApplicationStoppedEventArgs args)
         {
             base.OnApplicationStopped(args);
 
+            api.Database.Games.ItemUpdated -= OnGameUpdated;
             OptimizationCacheHelper.Save();
         }
 
