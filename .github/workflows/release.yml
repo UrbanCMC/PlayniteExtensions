@@ -7,7 +7,7 @@ name: Release Build
 
 jobs:
   build:
-    runs-on: windows-2019
+    runs-on: windows-2025
     permissions:
       contents: write
     steps:
