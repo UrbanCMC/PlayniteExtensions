@@ -77,3 +77,9 @@ Packages:
     Changelog:
     - Fix crash when images use paths not supported by the file system. These cases will be logged with additional information.
     - Don''t process game updates before fully ready to do so
+  - Version: 1.11
+    RequiredApiVersion: 6.2.0
+    ReleaseDate: 2026-02-22
+    PackageUrl: https://github.com/UrbanCMC/PlayniteExtensions/releases/download/metadataimageoptimizer1.11/MetadataImageOptimizer_1_11.pext
+    Changelog:
+    - Add scrollbars to settings window when controls don't fit otherwise.

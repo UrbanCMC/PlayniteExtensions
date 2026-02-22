@@ -9,13 +9,19 @@
   mc:Ignorable="d">
   <TabControl>
     <TabItem Header="General">
-      <locals:GeneralSettingsView DataContext="{Binding}" />
+      <ScrollViewer>
+        <locals:GeneralSettingsView DataContext="{Binding}" />
+      </ScrollViewer>
     </TabItem>
     <TabItem Header="Quality">
-      <locals:QualitySettingsView DataContext="{Binding}" />
+      <ScrollViewer>
+        <locals:QualitySettingsView DataContext="{Binding}" />
+      </ScrollViewer>
     </TabItem>
     <TabItem Header="Add-ons">
-      <locals:AddonSettingsView DataContext="{Binding}" />
+      <ScrollViewer>
+        <locals:AddonSettingsView DataContext="{Binding}" />
+      </ScrollViewer>
     </TabItem>
   </TabControl>
 </UserControl>
