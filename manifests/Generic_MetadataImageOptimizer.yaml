@@ -82,4 +82,4 @@ Packages:
     ReleaseDate: 2026-02-22
     PackageUrl: https://github.com/UrbanCMC/PlayniteExtensions/releases/download/metadataimageoptimizer1.11/MetadataImageOptimizer_1_11.pext
     Changelog:
-    - Add scrollbars to settings window when controls don't fit otherwise.
+    - Add scrollbars to settings window when controls don''t fit otherwise.
