@@ -31,6 +31,9 @@ jobs:
         #outputs projects, releasetitle
         #also writes release notes to ./publish/release_notes.txt
 
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1.1
+
       - name: Setup Nuget.exe
         uses: NuGet/setup-nuget@v1
 
@@ -39,8 +42,7 @@ jobs:
 
       - name: Build
         run: |
-           cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\"
-           .\MSBuild.exe $Env:GITHUB_WORKSPACE\src\PlayniteExtensions.sln -p:Configuration=Release -restore -clp:ErrorsOnly
+           msbuild .\src\PlayniteExtensions.sln -p:Configuration=Release -restore -clp:ErrorsOnly
 
       - name: Setup Playnite
         run: |
